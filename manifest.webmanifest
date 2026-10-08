@@ -1,0 +1,17 @@
+{
+  "name": "อุ๋งอุ๋งอ่านนิทาน",
+  "short_name": "อุ๋งอุ๋ง",
+  "description": "อ่านนิทานออกเสียง อุ๋งอุ๋งฟังและช่วยอ่าน",
+  "lang": "th",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF1FF",
+  "theme_color": "#4756D6",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
