@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /players/{uid} {
+      // ทุกคนที่เข้าสู่ระบบดูอันดับได้
+      allow read: if request.auth != null;
+
+      function ok(d) {
+        return d.keys().hasOnly(['name','login','loginDay','lastLogin','pe','pc','ph','be','bc','bh',
+                                 'td','te','tc','th','lk','s1','s2','s3','total','upd'])
+          && d.name is string && d.name.size() >= 1 && d.name.size() <= 20
+          && d.login is int && d.login >= 0 && d.login <= 100000
+          && d.loginDay is int && d.loginDay >= 0 && d.loginDay <= 10
+          && d.lastLogin is string && d.lastLogin.size() <= 10
+          && d.pe is int && d.pe >= 0 && d.pe <= 334
+          && d.pc is int && d.pc >= 0 && d.pc <= 333
+          && d.ph is int && d.ph >= 0 && d.ph <= 333
+          && d.be is string && d.be.size() <= 334
+          && d.bc is string && d.bc.size() <= 333
+          && d.bh is string && d.bh.size() <= 333
+          && d.td is string && d.td.size() <= 10
+          && d.te is int && d.te >= 0 && d.te <= 50
+          && d.tc is int && d.tc >= 0 && d.tc <= 50
+          && d.th is int && d.th >= 0 && d.th <= 50
+          && d.lk is string && d.lk.size() <= 3
+          && d.s1 is int && d.s1 >= 0 && d.s1 <= 3340
+          && d.s2 is int && d.s2 >= 0 && d.s2 <= 4995
+          && d.s3 is int && d.s3 >= 0 && d.s3 <= 6660
+          && d.total is int && d.total == d.login + d.s1 + d.s2 + d.s3
+          && d.upd is int;
+      }
+
+      allow create: if request.auth != null && request.auth.uid == uid && ok(request.resource.data);
+      // คะแนนลดลงไม่ได้
+      allow update: if request.auth != null && request.auth.uid == uid && ok(request.resource.data)
+        && request.resource.data.s1 >= resource.data.s1
+        && request.resource.data.s2 >= resource.data.s2
+        && request.resource.data.s3 >= resource.data.s3
+        && request.resource.data.login >= resource.data.login;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

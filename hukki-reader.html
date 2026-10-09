@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ฮูกกี้อ่านนิทาน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one calm column. Storybook card in the middle, owl buddy above it, one big mic button below. */
+:root{
+  --bg:#EDF1FF; --surface:#FFFFFF; --ink:#1B2260; --muted:#5D65A0; --line:#D6DCF6;
+  --brand:#4756D6; --brand-deep:#3745B8; --brand-soft:#E3E7FF;
+  --sun:#FFC63B; --sun-soft:#FFF1C2;
+  --ok:#0B8A55; --ok-soft:#D9F5E7;
+  --bad:#D63640; --bad-soft:#FFE1E2;
+  --help:#A85F00; --help-soft:#FFEBC2;
+  --font-display:"Mali","Noto Sans Thai Looped",Tahoma,sans-serif;
+  --font-ui:"Noto Sans Thai Looped","Mali",Tahoma,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:1rem;line-height:1.65;
+  padding-inline:16px;padding-block:20px 48px;min-height:100%;
+}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--font-display);margin:0;line-height:1.3;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+[hidden]{display:none!important}
+
+/* ---------- home ---------- */
+.hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hero .owl-slot{width:96px;flex:none}
+.hero-text{flex:1 1 240px;min-width:0}
+.hero h1{font-size:clamp(1.9rem,6vw,2.6rem);color:var(--brand-deep)}
+.hero p{margin:4px 0 0;color:var(--muted)}
+.notice{background:var(--sun-soft);border:2px solid var(--sun);border-radius:16px;padding:12px 16px;font-size:.95rem}
+.notice+.notice{margin-top:-8px}
+.story-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.story-list li{display:flex;gap:8px;min-width:0}
+.story{
+  flex:1;min-width:0;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:22px;
+  padding:16px 18px;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s;
+}
+.story:hover{border-color:var(--brand);transform:translateY(-2px)}
+.story .s-title{font-family:var(--font-display);font-weight:700;font-size:1.3rem;color:var(--ink)}
+.story .s-meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;color:var(--muted);font-size:.9rem}
+.lv{background:var(--brand-soft);color:var(--brand-deep);border-radius:999px;padding:0 10px;font-weight:600}
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:20px;height:20px}
+.del{align-self:flex-start;background:none;border:2px solid var(--line);border-radius:14px;padding:6px 10px;color:var(--muted);font-size:.85rem}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:6px 18px}
+.panel summary{cursor:pointer;font-weight:600;padding:12px 0;list-style:none}
+.panel summary::-webkit-details-marker{display:none}
+.panel summary::after{content:"＋";float:right;color:var(--brand)}
+.panel[open] summary::after{content:"－"}
+.form{display:flex;flex-direction:column;gap:12px;padding-bottom:16px}
+.form label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.95rem}
+.form small{font-weight:400;color:var(--muted)}
+input[type=text],textarea,select{
+  font:inherit;color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;
+}
+textarea{min-height:120px;resize:vertical;font-family:var(--font-display)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{
+  background:var(--brand);color:#fff;border:0;border-radius:16px;padding:12px 22px;font-weight:700;
+  box-shadow:0 4px 0 var(--brand-deep);transition:transform .1s,box-shadow .1s;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--brand-deep)}
+.btn.alt{background:#fff;color:var(--brand-deep);border:2px solid var(--brand);box-shadow:0 4px 0 var(--line)}
+.settings{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
+.settings select{width:auto}
+
+/* ---------- reader ---------- */
+.bar{display:flex;align-items:center;gap:12px}
+.back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 14px;font-weight:600}
+.bar-title{flex:1;min-width:0;font-family:var(--font-display);font-weight:700;font-size:1.1rem;text-align:center;overflow-wrap:anywhere}
+.count{color:var(--muted);font-size:.9rem;white-space:nowrap}
+.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.dots span{width:12px;height:12px;border-radius:50%;background:var(--line);transition:background .2s,transform .2s}
+.dots span.done{background:var(--ok)}
+.dots span.cur{background:#fff;border:3px solid var(--brand);transform:scale(1.25)}
+.buddy{display:flex;align-items:center;gap:14px}
+.buddy .owl-slot{width:84px;flex:none}
+.bubble{
+  position:relative;margin:0;flex:1;min-width:0;background:var(--surface);border:2px solid var(--line);border-radius:20px;
+  padding:10px 16px;font-weight:600;min-height:3.4em;display:flex;align-items:center;
+}
+.bubble::before{content:"";position:absolute;left:-10px;top:50%;width:16px;height:16px;background:var(--surface);
+  border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateY(-50%) rotate(45deg)}
+.sentence{
+  background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:26px 18px;
+  display:flex;flex-wrap:wrap;gap:8px 4px;justify-content:center;align-content:center;min-height:11rem;
+  box-shadow:0 6px 0 var(--line);
+}
+.w{
+  font-family:var(--font-display);font-weight:600;font-size:clamp(2.1rem,8vw,3.3rem);line-height:1.5;
+  background:transparent;border:0;border-bottom:5px solid transparent;border-radius:16px;padding:0 .18em;color:var(--ink);
+  transition:background .2s,color .2s,border-color .2s;
+}
+.w.cur{background:var(--sun-soft);border-bottom-color:var(--sun)}
+.w.ok{color:var(--ok);background:var(--ok-soft)}
+.w.help{color:var(--help);background:var(--help-soft)}
+.w.cur.bad{background:var(--bad-soft);border-bottom-color:var(--bad);color:var(--bad)}
+.heard{margin:0;text-align:center;color:var(--muted);font-size:.95rem;min-height:1.6em;overflow-wrap:anywhere}
+.controls{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.ctl{
+  display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:20px;
+  padding:12px 8px;font-weight:600;font-size:.9rem;min-width:0;
+}
+.ctl svg{width:28px;height:28px;color:var(--brand-deep)}
+.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.mic{
+  position:relative;width:104px;height:104px;border-radius:50%;border:0;background:var(--brand);color:#fff;
+  display:grid;place-items:center;box-shadow:0 6px 0 var(--brand-deep);transition:transform .1s,box-shadow .1s,background .2s;
+}
+.mic:active{transform:translateY(4px);box-shadow:0 2px 0 var(--brand-deep)}
+.mic svg{width:46px;height:46px}
+.mic.on{background:var(--sun);color:var(--ink);box-shadow:0 6px 0 #D9A21A}
+.mic.on::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:4px solid var(--sun);animation:ring 1.4s ease-out infinite}
+.mic-label{font-weight:700}
+.waves{display:flex;gap:4px;align-items:flex-end;height:20px}
+.waves i{width:5px;border-radius:3px;background:var(--brand);animation:wave 1s ease-in-out infinite}
+.waves i:nth-child(1){height:8px}
+.waves i:nth-child(2){height:16px;animation-delay:.15s}
+.waves i:nth-child(3){height:12px;animation-delay:.3s}
+.waves i:nth-child(4){height:18px;animation-delay:.45s}
+.waves i:nth-child(5){height:9px;animation-delay:.6s}
+.hint{margin:0;text-align:center;color:var(--muted);font-size:.92rem}
+.hint.warn{color:var(--bad);font-weight:600}
+
+/* ---------- result ---------- */
+.result{align-items:center;text-align:center;display:flex;flex-direction:column;gap:18px}
+.result .owl-slot{width:130px}
+.result .stars svg{width:48px;height:48px}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.stat{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:10px 18px;min-width:130px}
+.stat b{display:block;font-family:var(--font-display);font-size:1.8rem;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.9rem}
+.stat.ok b{color:var(--ok)}.stat.help b{color:var(--help)}.stat.bad b{color:var(--bad)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{font-family:var(--font-display);font-weight:600;font-size:1.4rem;background:var(--help-soft);color:var(--help);border:0;border-radius:14px;padding:2px 14px}
+
+/* ---------- owl ---------- */
+.owl{width:100%;height:auto;display:block;overflow:visible}
+.owl .happy-eyes,.owl .drop{display:none}
+.owl[data-mood=happy] .eyes{display:none}
+.owl[data-mood=happy] .happy-eyes{display:block}
+.owl[data-mood=happy] .body{animation:hop .5s ease 3;transform-origin:60px 118px}
+.owl[data-mood=oops] .drop{display:block}
+.owl[data-mood=oops] .pupil{transform-box:fill-box;transform-origin:center;transform:scale(.7)}
+.owl[data-mood=listen] .pupil{transform-box:fill-box;transform-origin:center;transform:scale(1.3)}
+.owl[data-mood=listen] .body{animation:tilt 2.6s ease-in-out infinite;transform-origin:60px 118px}
+
+@keyframes ring{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+@keyframes wave{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.2)}}
+@keyframes tilt{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:420px){
+  .controls{gap:8px}
+  .mic{width:92px;height:92px}
+  .buddy .owl-slot{width:68px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== หน้าเลือกนิทาน ===== -->
+  <section id="home" class="wrap" style="gap:20px">
+    <header class="hero">
+      <div class="owl-slot"></div>
+      <div class="hero-text">
+        <h1>ฮูกกี้อ่านนิทาน</h1>
+        <p>เลือกนิทานสั้นๆ แล้วอ่านออกเสียงตามได้เลย ฮูกกี้จะฟัง เตือนเมื่ออ่านผิด และช่วยอ่านเมื่ออ่านช้า</p>
+      </div>
+    </header>
+    <div id="notices"></div>
+    <ul id="storyList" class="story-list"></ul>
+
+    <details class="panel" id="addBox">
+      <summary>เพิ่มนิทานของเราเอง</summary>
+      <form id="addForm" class="form">
+        <label for="cTitle">ชื่อเรื่อง
+          <input type="text" id="cTitle" maxlength="40" placeholder="เช่น หมูน้อยไปตลาด">
+        </label>
+        <label for="cText">เนื้อเรื่อง (1 บรรทัด = 1 ประโยค)
+          <textarea id="cText" placeholder="หมูน้อยไปตลาด&#10;แม่ซื้อผลไม้ให้หมูน้อย"></textarea>
+          <small>แอปตัดคำให้อัตโนมัติ ถ้าอยากกำหนดเองให้พิมพ์ | คั่นระหว่างคำ เช่น หมู|น้อย|ไป|ตลาด</small>
+        </label>
+        <div class="row">
+          <button type="submit" class="btn">บันทึกนิทาน</button>
+          <span id="addMsg" class="hint" role="status"></span>
+        </div>
+      </form>
+    </details>
+
+    <div class="settings">
+      <label for="slowSel">ถ้าเงียบหรืออ่านช้า รอ</label>
+      <select id="slowSel">
+        <option value="3">3 วินาที</option>
+        <option value="5">5 วินาที</option>
+        <option value="8">8 วินาที</option>
+        <option value="12">12 วินาที</option>
+      </select>
+      <span>แล้วฮูกกี้ช่วยอ่านคำถัดไปให้</span>
+    </div>
+  </section>
+
+  <!-- ===== หน้าอ่าน ===== -->
+  <section id="reader" class="wrap" hidden style="gap:18px">
+    <div class="bar">
+      <button type="button" id="backBtn" class="back" aria-label="กลับไปเลือกนิทาน">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        กลับ
+      </button>
+      <div id="rTitle" class="bar-title"></div>
+      <div id="rCount" class="count"></div>
+    </div>
+    <div id="dots" class="dots" aria-hidden="true"></div>
+    <div class="buddy">
+      <div class="owl-slot"></div>
+      <p id="bubble" class="bubble" role="status" aria-live="polite"></p>
+    </div>
+    <div id="sentence" class="sentence"></div>
+    <p id="heard" class="heard" aria-live="off"></p>
+    <div class="controls">
+      <button type="button" id="hearBtn" class="ctl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>
+        ฟังทั้งประโยค
+      </button>
+      <div class="mic-wrap">
+        <button type="button" id="micBtn" class="mic" aria-pressed="false" aria-label="เริ่มอ่าน">
+          <svg id="icoMic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
+          <svg id="icoOk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+        </button>
+        <span id="micLabel" class="mic-label">เริ่มอ่าน</span>
+        <div id="waves" class="waves" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <button type="button" id="helpBtn" class="ctl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4l14 8-14 8V4z"/></svg>
+        ช่วยอ่านคำนี้
+      </button>
+    </div>
+    <p id="micHint" class="hint"></p>
+  </section>
+
+  <!-- ===== หน้าสรุป ===== -->
+  <section id="result" class="result" hidden>
+    <div class="owl-slot"></div>
+    <h2 id="resTitle">อ่านจบแล้ว</h2>
+    <div id="resStars" class="stars" role="img"></div>
+    <div class="stat-row">
+      <div class="stat ok"><b id="stOk">0</b><span>คำที่อ่านเอง</span></div>
+      <div class="stat help"><b id="stHelp">0</b><span>คำที่ฮูกกี้ช่วย</span></div>
+      <div class="stat bad"><b id="stWrong">0</b><span>ครั้งที่อ่านผิด</span></div>
+    </div>
+    <div id="practiceBox" hidden>
+      <h3 style="margin-bottom:8px">คำที่ควรฝึกอีกหน่อย</h3>
+      <div id="practice" class="chips"></div>
+      <p class="hint" style="margin-top:6px">แตะที่คำเพื่อฟังเสียงอ่าน</p>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button type="button" id="againBtn" class="btn">อ่านเรื่องนี้อีกครั้ง</button>
+      <button type="button" id="otherBtn" class="btn alt">เลือกเรื่องอื่น</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============ ตัวช่วยทั่วไป ============ */
+var $ = function(id){ return document.getElementById(id); };
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+var synth = window.speechSynthesis || null;
+var RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+// เทียบเสียงแบบไม่สนวรรณยุกต์ ช่องว่าง และเครื่องหมาย (ตัวรู้จำเสียงมักแยกวรรณยุกต์ไม่ได้)
+var TONES = /[่-๋]/g;
+function norm(s){
+  return String(s).toLowerCase().replace(TONES,'').replace(/[\s​.,!?'"“”‘’()\-–—…ๆ]/g,'');
+}
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(text != null) e.textContent = text;
+  return e;
+}
+
+/* ============ ตรรกะเทียบเสียงกับเนื้อเรื่อง ============ */
+function lev(a, b){
+  var m = a.length, n = b.length;
+  if(!m) return n;
+  if(!n) return m;
+  var prev = new Array(n+1), cur = new Array(n+1), i, j, t;
+  for(j=0;j<=n;j++) prev[j] = j;
+  for(i=1;i<=m;i++){
+    cur[0] = i;
+    for(j=1;j<=n;j++){
+      cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+    }
+    t = prev; prev = cur; cur = t;
+  }
+  return prev[n];
+}
+function maxDist(n){ return n <= 2 ? 0 : (n <= 5 ? 1 : 2); }
+
+// words: คำที่ปรับรูปแล้ว, text: ข้อความที่ได้ยิน (ปรับรูปแล้ว)
+// คืนจำนวนคำที่อ่านได้ตรงตามลำดับ (k) และตำแหน่งตัวอักษรที่ใช้ไป (c)
+function align(words, text){
+  var c = 0, k = 0;
+  for(; k < words.length; k++){
+    var w = words[k], md = maxDist(w.length), best = null;
+    for(var s = c; s <= Math.min(c+2, text.length); s++){
+      for(var L = w.length-1; L <= w.length+1; L++){
+        if(L < 1 || s+L > text.length) continue;
+        var d = lev(w, text.substr(s, L));
+        if(d <= md && (!best || d < best.d || (d === best.d && s < best.s))) best = {d:d, s:s, e:s+L};
+      }
+    }
+    if(!best) break;
+    c = best.e;
+  }
+  return {k:k, c:c};
+}
+window.__align = align; window.__norm = norm;
+
+/* ============ นิทานในเครื่อง ============ */
+var BUILTIN = [
+  {id:'meemee', title:'แมวน้อยมีมี่', level:1, lines:[
+    'มีมี่|เป็น|แมว|ตัว|เล็ก',
+    'มัน|ชอบ|กิน|ปลา',
+    'วัน|หนึ่ง|มีมี่|เห็น|ปลา|ใน|ตู้',
+    'มีมี่|ดีใจ|มาก',
+    'แม่|ให้|ปลา|มีมี่|หนึ่ง|ตัว',
+    'มีมี่|อิ่ม|แล้ว|นอน|หลับ|ฝัน|ดี'
+  ]},
+  {id:'duck', title:'ลูกเป็ดน้อยกับสายฝน', level:2, lines:[
+    'เช้า|วัน|นี้|ลูก|เป็ด|ตื่น|แต่|เช้า',
+    'มัน|เดิน|ไป|ที่|สระ|น้ำ',
+    'ลูก|เป็ด|ว่าย|น้ำ|อย่าง|สนุก',
+    'แต่|แล้ว|ฝน|ก็|ตก|ลง|มา',
+    'ลูก|เป็ด|วิ่ง|กลับ|ไป|หา|แม่',
+    'แม่|เป็ด|กอด|ลูก|ไว้|แน่น'
+  ]},
+  {id:'turtle', title:'เต่าน้อยใจดี', level:3, lines:[
+    'เต่า|น้อย|อาศัย|อยู่|ริม|ลำธาร',
+    'วัน|หนึ่ง|กระต่าย|ตก|ลง|ไป|ใน|น้ำ',
+    'เต่า|น้อย|ว่าย|ไป|ช่วย|กระต่าย',
+    'กระต่าย|ขอบคุณ|เต่า|น้อย|ด้วย|ความ|ดีใจ',
+    'จาก|นั้น|ทั้ง|สอง|ก็|เป็น|เพื่อน|กัน'
+  ]}
+];
+BUILTIN.forEach(function(s){ s.sentences = s.lines.map(function(l){ return l.split('|'); }); });
+
+var KEY = 'hukki-reader-v1';
+var save = {best:{}, custom:[], slow:5};
+try{
+  var raw = localStorage.getItem(KEY);
+  if(raw){ var o = JSON.parse(raw); if(o && typeof o === 'object') save = Object.assign(save, o); }
+}catch(e){}
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(save)); }catch(e){} }
+function allStories(){
+  return BUILTIN.concat(save.custom.map(function(c){
+    return {id:c.id, title:c.title, level:0, custom:true, sentences:c.sentences};
+  }));
+}
+function segmentLine(line){
+  if(line.indexOf('|') >= 0) return line.split('|').map(function(s){ return s.trim(); }).filter(Boolean);
+  if(window.Intl && Intl.Segmenter){
+    var seg = new Intl.Segmenter('th', {granularity:'word'});
+    return Array.from(seg.segment(line)).filter(function(x){ return x.isWordLike; }).map(function(x){ return x.segment; });
+  }
+  return line.split(/\s+/).filter(Boolean);
+}
+
+/* ============ มาสคอต ============ */
+var OWL = '<svg class="owl" viewBox="0 0 120 128" role="img" aria-label="ฮูกกี้ นกฮูกผู้ช่วยอ่าน" data-mood="idle">'
+ + '<g class="body">'
+ + '<path d="M24 46 L30 10 L58 30 Z" fill="#4756D6"/><path d="M96 46 L90 10 L62 30 Z" fill="#4756D6"/>'
+ + '<ellipse cx="60" cy="74" rx="42" ry="44" fill="#4756D6"/>'
+ + '<ellipse cx="60" cy="92" rx="27" ry="25" fill="#E3E7FF"/>'
+ + '<path d="M15 80 Q7 98 23 110 Q27 92 25 76 Z" fill="#3745B8"/><path d="M105 80 Q113 98 97 110 Q93 92 95 76 Z" fill="#3745B8"/>'
+ + '<g class="eyes"><circle cx="43" cy="60" r="17" fill="#fff"/><circle cx="77" cy="60" r="17" fill="#fff"/>'
+ + '<circle class="pupil" cx="43" cy="62" r="7" fill="#1B2260"/><circle class="pupil" cx="77" cy="62" r="7" fill="#1B2260"/>'
+ + '<circle cx="45" cy="59" r="2.2" fill="#fff"/><circle cx="79" cy="59" r="2.2" fill="#fff"/></g>'
+ + '<g class="happy-eyes" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M31 63 Q43 48 55 63"/><path d="M65 63 Q77 48 89 63"/></g>'
+ + '<path d="M53 72 L67 72 L60 85 Z" fill="#FFC63B"/>'
+ + '<path class="drop" d="M98 36 Q104 46 98 51 Q92 46 98 36 Z" fill="#7FC8FF"/>'
+ + '<ellipse cx="46" cy="120" rx="11" ry="5" fill="#FFC63B"/><ellipse cx="74" cy="120" rx="11" ry="5" fill="#FFC63B"/>'
+ + '</g></svg>';
+document.querySelectorAll('.owl-slot').forEach(function(s){ s.innerHTML = OWL; });
+var moodTimer = null;
+function setMood(m, revertMs){
+  clearTimeout(moodTimer);
+  document.querySelectorAll('.owl').forEach(function(o){ o.setAttribute('data-mood', m); });
+  if(revertMs) moodTimer = setTimeout(function(){ setMood(listening ? 'listen' : 'idle'); }, revertMs);
+}
+function bubble(t){ $('bubble').textContent = t; }
+
+/* ============ เสียงเอฟเฟกต์และเสียงพูด ============ */
+var ac = null;
+function ensureAudio(){
+  try{
+    if(!ac){ var C = window.AudioContext || window.webkitAudioContext; if(C) ac = new C(); }
+    if(ac && ac.state === 'suspended') ac.resume();
+  }catch(e){}
+}
+function tone(f, t0, d, type, g){
+  if(!ac) return;
+  var o = ac.createOscillator(), v = ac.createGain(), t = ac.currentTime + t0;
+  o.type = type || 'sine'; o.frequency.value = f;
+  v.gain.setValueAtTime(0.0001, t);
+  v.gain.exponentialRampToValueAtTime(g || 0.1, t + 0.02);
+  v.gain.exponentialRampToValueAtTime(0.0001, t + d);
+  o.connect(v); v.connect(ac.destination); o.start(t); o.stop(t + d + 0.05);
+}
+var sfx = {
+  win: function(){ [659,784,988].forEach(function(f,i){ tone(f, i*0.11, 0.22, 'triangle', 0.1); }); },
+  oops: function(){ tone(220, 0, 0.22, 'sawtooth', 0.05); tone(180, 0.14, 0.26, 'sawtooth', 0.05); }
+};
+
+var voice = null;
+function pickVoice(){
+  if(!synth) return;
+  var vs = synth.getVoices() || [];
+  voice = null;
+  for(var i=0;i<vs.length;i++){ if(/^th/i.test(String(vs[i].lang).replace('_','-'))){ voice = vs[i]; break; } }
+}
+if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
+
+var speaking = false, quietUntil = 0;
+function say(text, rate){
+  return new Promise(function(res){
+    if(!synth){ res(); return; }
+    try{ synth.cancel(); }catch(e){}
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'th-TH'; u.rate = rate || 0.85; u.pitch = 1.1;
+    if(voice) u.voice = voice;
+    speaking = true;
+    var done = false, tm = null;
+    function fin(){
+      if(done) return; done = true; clearTimeout(tm);
+      speaking = false;
+      quietUntil = Date.now() + 700;              // รอให้เสียงสะท้อนจางก่อนฟังต่อ
+      setTimeout(function(){ resetRecog(); lastActive = Date.now(); }, 720);
+      res();
+    }
+    u.onend = fin; u.onerror = fin;
+    tm = setTimeout(fin, Math.min(12000, 1500 + text.length * 260));
+    synth.speak(u);
+  });
+}
+
+/* ============ สถานะการอ่าน ============ */
+var story = null, sIdx = 0, words = [], nwords = [], status = [], pos = 0, flashWrong = -1;
+var stats = null, wrongCnt = {};
+var listening = false, busy = false, rec = null, lastActive = 0;
+var ignoreIdx = -1, skipChars = 0, segIdx = -1, base = 0, latest = {idx:-1, text:''};
+var wrongTimer = null;
+
+function show(name){
+  ['home','reader','result'].forEach(function(n){ $(n).hidden = (n !== name); });
+  window.scrollTo(0, 0);
+}
+
+function renderSentence(){
+  var box = $('sentence'); box.textContent = '';
+  words.forEach(function(w, i){
+    var b = el('button', 'w', w); b.type = 'button';
+    b.setAttribute('aria-label', 'ฟังเสียงคำว่า ' + w);
+    b.addEventListener('click', function(){ ensureAudio(); if(!busy) say(w, 0.7); });
+    box.appendChild(b);
+  });
+  paintWords();
+}
+function paintWords(){
+  var kids = $('sentence').children;
+  for(var i=0;i<kids.length;i++){
+    var c = 'w';
+    if(status[i] === 'ok') c += ' ok';
+    else if(status[i] === 'help') c += ' help';
+    else if(i === pos) c += ' cur' + (flashWrong === i ? ' bad' : '');
+    kids[i].className = c;
+  }
+}
+function shake(i){
+  var b = $('sentence').children[i];
+  if(b && b.animate && !RM){
+    b.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(-5px)'},{transform:'translateX(0)'}], {duration:380});
+  }
+}
+function renderDots(doneCur){
+  var d = $('dots'); d.textContent = '';
+  for(var i=0;i<story.sentences.length;i++){
+    var s = el('span');
+    if(i < sIdx || (i === sIdx && doneCur)) s.className = 'done';
+    else if(i === sIdx) s.className = 'cur';
+    d.appendChild(s);
+  }
+}
+
+function resetRecog(){
+  ignoreIdx = latest.idx; skipChars = latest.text.length; segIdx = latest.idx; base = pos;
+  clearTimeout(wrongTimer);
+}
+
+function loadSentence(){
+  words = story.sentences[sIdx];
+  nwords = words.map(norm);
+  status = words.map(function(){ return null; });
+  pos = 0; flashWrong = -1; busy = false;
+  clearTimeout(wrongTimer);
+  renderSentence(); renderDots(false);
+  $('rCount').textContent = 'ประโยค ' + (sIdx+1) + ' จาก ' + story.sentences.length;
+  $('heard').textContent = '';
+  resetRecog();
+  lastActive = Date.now() + 1500;
+  bubble(listening ? 'อ่านประโยคนี้ได้เลย ฮูกกี้ฟังอยู่' : (SR ? 'กดปุ่มไมค์ แล้วอ่านออกเสียงตามได้เลย' : 'แตะคำเพื่อฟังเสียง แล้วกดปุ่มเมื่ออ่านได้'));
+}
+
+function openStory(st){
+  story = st; sIdx = 0; wrongCnt = {};
+  stats = {total: st.sentences.reduce(function(a, s){ return a + s.length; }, 0), ok:0, help:0, wrong:0, clean:0, practice:new Set()};
+  $('rTitle').textContent = st.title;
+  show('reader');
+  loadSentence();
+  updateMic();
+}
+
+function markOk(i){
+  status[i] = 'ok'; stats.ok++;
+  if(!(wrongCnt[sIdx + ':' + i] > 0)) stats.clean++;
+}
+
+var PRAISE = ['เก่งมาก!','อ่านได้ถูกต้องเลย','ยอดเยี่ยม!','อ่านคล่องจัง','เยี่ยมไปเลย!'];
+function sentenceDone(){
+  if(busy) return;
+  busy = true; clearTimeout(wrongTimer); flashWrong = -1; paintWords();
+  setMood('happy', 1600);
+  bubble(PRAISE[Math.floor(Math.random() * PRAISE.length)]);
+  ensureAudio(); sfx.win(); renderDots(true);
+  setTimeout(function(){
+    if($('reader').hidden) return;
+    sIdx++;
+    if(sIdx >= story.sentences.length) finish(); else loadSentence();
+  }, 1600);
+}
+
+async function helpWord(i, reason){
+  if(i >= words.length || busy) return;
+  busy = true; clearTimeout(wrongTimer);
+  status[i] = 'help'; stats.help++; stats.practice.add(words[i]);
+  pos = i + 1; flashWrong = -1; paintWords();
+  bubble(reason === 'slow' ? 'ช้าไปหน่อยนะ ฮูกกี้ช่วยอ่านให้ แล้วอ่านคำต่อไปเลย'
+       : reason === 'wrong' ? 'คำนี้ยากนิดนึง ฮูกกี้อ่านให้ แล้วไปคำต่อไปกัน'
+       : 'ฮูกกี้อ่านให้นะ ตามมาเลย');
+  await say(words[i], 0.7);
+  busy = false;
+  setMood(listening ? 'listen' : 'idle');
+  if(pos >= words.length) sentenceDone();
+}
+
+async function wrongAt(i){
+  if(busy || i !== pos || i >= words.length) return;
+  busy = true;
+  var key = sIdx + ':' + i;
+  wrongCnt[key] = (wrongCnt[key] || 0) + 1;
+  stats.wrong++; stats.practice.add(words[i]);
+  flashWrong = i; paintWords(); shake(i);
+  ensureAudio(); sfx.oops(); setMood('oops', 2200);
+  if(wrongCnt[key] >= 3){ busy = false; return helpWord(i, 'wrong'); }
+  bubble('อ่านผิดนะ ลองอีกครั้ง คำนี้อ่านว่า “' + words[i] + '”');
+  await say('ยังไม่ถูกนะ คำนี้อ่านว่า ' + words[i], 0.8);
+  busy = false;
+}
+
+/* ============ ฟังเสียง ============ */
+function onResult(ev){
+  var n = ev.results.length, idx = n - 1, r = ev.results[idx];
+  var rawText = r[0].transcript, text = norm(rawText);
+  latest = {idx: idx, text: text};
+  if(speaking || busy || Date.now() < quietUntil || $('reader').hidden) return;
+  if(idx < ignoreIdx) return;
+  var t = (idx === ignoreIdx) ? text.slice(skipChars) : text;
+  if(idx !== segIdx){ segIdx = idx; base = pos; }
+  $('heard').textContent = t ? 'ฮูกกี้ได้ยินว่า “' + rawText.trim() + '”' : '';
+  if(t.length > 0) lastActive = Date.now();
+  if(pos >= words.length) return;
+
+  var res = align(nwords.slice(base), t);
+  var np = base + res.k;
+  if(np > pos){
+    for(var i = pos; i < np; i++) markOk(i);
+    pos = np; flashWrong = -1; clearTimeout(wrongTimer); lastActive = Date.now();
+    paintWords(); setMood('listen');
+    if(pos >= words.length){ sentenceDone(); return; }
+    bubble('เก่งมาก อ่านต่อเลย');
+  }
+  clearTimeout(wrongTimer);
+  var w = nwords[pos], tail = t.slice(res.c);
+  if(tail.length >= Math.max(2, w.length - 1) && w.indexOf(tail) !== 0){
+    var at = pos;
+    wrongTimer = setTimeout(function(){
+      if(!speaking && !busy && listening && pos === at) wrongAt(at);
+    }, r.isFinal ? 200 : 1000);
+  }
+}
+function onError(e){
+  var code = e && e.error;
+  if(code === 'no-speech' || code === 'aborted') return;
+  var hint = $('micHint');
+  hint.classList.add('warn');
+  if(code === 'not-allowed' || code === 'service-not-allowed'){
+    listening = false; updateMic();
+    hint.textContent = 'ฮูกกี้ยังใช้ไมโครโฟนไม่ได้ กรุณาอนุญาตการใช้ไมค์ในเบราว์เซอร์'
+      + (location.protocol === 'file:' ? ' (ถ้าเปิดไฟล์จากเครื่องแล้วยังไม่ได้ ให้เปิดผ่านเว็บแบบ https หรือ localhost)' : '');
+  }else if(code === 'network'){
+    hint.textContent = 'การฟังเสียงต้องต่ออินเทอร์เน็ต กรุณาตรวจสอบการเชื่อมต่อ';
+  }else if(code === 'audio-capture'){
+    listening = false; updateMic();
+    hint.textContent = 'ไม่พบไมโครโฟนในเครื่องนี้';
+  }else if(code === 'language-not-supported'){
+    listening = false; updateMic();
+    hint.textContent = 'เครื่องนี้ยังไม่รองรับการฟังภาษาไทย';
+  }
+}
+function onEnd(){
+  if(!listening) return;
+  latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
+  try{ rec.start(); }
+  catch(e){ setTimeout(function(){ if(listening){ try{ rec.start(); }catch(_){} } }, 400); }
+}
+function startListening(){
+  if(!SR || listening) return;
+  $('micHint').classList.remove('warn'); $('micHint').textContent = '';
+  rec = new SR();
+  rec.lang = 'th-TH'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  rec.onresult = onResult; rec.onerror = onError; rec.onend = onEnd;
+  latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
+  listening = true; lastActive = Date.now() + 2000;
+  updateMic();
+  try{ rec.start(); }catch(e){}
+}
+function stopListening(){
+  listening = false; clearTimeout(wrongTimer);
+  if(rec){ rec.onend = null; try{ rec.abort(); }catch(e){} }
+  rec = null; updateMic();
+}
+function updateMic(){
+  var b = $('micBtn');
+  b.classList.toggle('on', listening);
+  b.setAttribute('aria-pressed', String(listening));
+  $('icoMic').hidden = !SR; $('icoOk').hidden = !!SR;
+  var label = !SR ? 'อ่านถูกแล้ว' : (listening ? 'หยุดฟัง' : 'เริ่มอ่าน');
+  $('micLabel').textContent = label; b.setAttribute('aria-label', label);
+  $('waves').hidden = !listening;
+  setMood(listening ? 'listen' : 'idle');
+}
+
+// ตรวจความช้าทุก 0.3 วินาที
+setInterval(function(){
+  if(!listening || speaking || busy || $('reader').hidden || pos >= words.length) return;
+  if(Date.now() - lastActive > save.slow * 1000) helpWord(pos, 'slow');
+}, 300);
+
+/* ============ จบเรื่อง ============ */
+function starSVG(on){
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8L12 2.5z" fill="' + (on ? '#FFC63B' : '#D6DCF6') + '" stroke="' + (on ? '#D9A21A' : '#C3CAEC') + '" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+}
+function starsHTML(n){ var s = ''; for(var i=1;i<=3;i++) s += starSVG(i <= n); return s; }
+
+function finish(){
+  stopListening(); busy = false;
+  var pct = stats.total ? stats.clean / stats.total : 0;
+  var n = pct >= 0.85 ? 3 : (pct >= 0.55 ? 2 : 1);
+  if(n > (save.best[story.id] || 0)){ save.best[story.id] = n; persist(); }
+  $('resTitle').textContent = n === 3 ? 'อ่านเก่งมาก!' : (n === 2 ? 'อ่านได้ดีมาก' : 'อ่านจบแล้ว เก่งมาก');
+  $('resStars').innerHTML = starsHTML(n);
+  $('resStars').setAttribute('aria-label', n + ' ดาว จาก 3 ดาว');
+  $('stOk').textContent = stats.ok; $('stHelp').textContent = stats.help; $('stWrong').textContent = stats.wrong;
+  var pr = $('practice'); pr.textContent = '';
+  stats.practice.forEach(function(w){
+    var c = el('button', 'chip', w); c.type = 'button';
+    c.addEventListener('click', function(){ ensureAudio(); say(w, 0.7); });
+    pr.appendChild(c);
+  });
+  $('practiceBox').hidden = stats.practice.size === 0;
+  show('result');
+  setMood('happy', 0); sfx.win();
+}
+
+/* ============ หน้าเลือกนิทาน ============ */
+function renderHome(){
+  var ul = $('storyList'); ul.textContent = '';
+  allStories().forEach(function(st){
+    var li = el('li');
+    var b = el('button', 'story'); b.type = 'button';
+    b.appendChild(el('span', 's-title', st.title));
+    var meta = el('span', 's-meta');
+    meta.appendChild(el('span', 'lv', st.level ? 'ระดับ ' + st.level : 'นิทานของเรา'));
+    meta.appendChild(el('span', '', st.sentences.length + ' ประโยค'));
+    var stars = el('span', 'stars'); stars.innerHTML = starsHTML(save.best[st.id] || 0);
+    stars.setAttribute('role', 'img'); stars.setAttribute('aria-label', (save.best[st.id] || 0) + ' ดาว');
+    meta.appendChild(stars);
+    b.appendChild(meta);
+    b.addEventListener('click', function(){ ensureAudio(); openStory(st); });
+    li.appendChild(b);
+    if(st.custom){
+      var d = el('button', 'del', 'ลบ'); d.type = 'button';
+      d.setAttribute('aria-label', 'ลบนิทาน ' + st.title);
+      d.addEventListener('click', function(){
+        if(!window.confirm('ลบนิทาน “' + st.title + '” ใช่ไหม?')) return;
+        save.custom = save.custom.filter(function(c){ return c.id !== st.id; });
+        delete save.best[st.id]; persist(); renderHome();
+      });
+      li.appendChild(d);
+    }
+    ul.appendChild(li);
+  });
+}
+function renderNotices(){
+  var box = $('notices'); box.textContent = '';
+  if(!SR){
+    box.appendChild(el('div', 'notice', 'เบราว์เซอร์นี้ยังฟังเสียงพูดไม่ได้ จึงเปิดเป็นโหมดฝึก: แตะคำเพื่อฟังเสียงอ่าน แล้วกดปุ่มเมื่ออ่านได้ถูกแล้ว ถ้าอยากให้ฮูกกี้ฟังเสียงจริง ให้เปิดด้วย Chrome หรือ Edge (Android และคอมพิวเตอร์) หรือ Safari บน iPhone และ iPad'));
+  }
+}
+setTimeout(function(){
+  if(synth && synth.getVoices().length > 0 && !voice){
+    $('notices').appendChild(el('div', 'notice', 'เครื่องนี้ยังไม่มีเสียงอ่านภาษาไทย ฮูกกี้อาจอ่านออกเสียงให้ไม่ได้ ลองเพิ่มเสียงภาษาไทยในการตั้งค่าการอ่านออกเสียงของเครื่อง'));
+  }
+}, 1200);
+
+/* ============ ปุ่มต่างๆ ============ */
+$('micBtn').addEventListener('click', function(){
+  ensureAudio();
+  if(!SR){
+    if(pos < words.length && !busy){
+      markOk(pos); pos++; flashWrong = -1; paintWords();
+      if(pos >= words.length) sentenceDone();
+    }
+    return;
+  }
+  if(listening){ stopListening(); bubble('พักก่อนนะ กดไมค์เมื่ออยากอ่านต่อ'); }
+  else { startListening(); bubble('ฮูกกี้ฟังอยู่นะ อ่านออกเสียงได้เลย'); }
+});
+$('helpBtn').addEventListener('click', function(){ ensureAudio(); helpWord(pos, 'tap'); });
+$('hearBtn').addEventListener('click', async function(){
+  ensureAudio();
+  if(busy || !words.length) return;
+  busy = true; bubble('ฟังฮูกกี้อ่านก่อนนะ');
+  await say(words.join(' '), 0.75);
+  busy = false;
+  bubble(listening ? 'ถึงตาหนูแล้ว อ่านเลย' : 'ถึงตาหนูแล้ว กดไมค์เพื่ออ่านตาม');
+});
+$('backBtn').addEventListener('click', function(){
+  stopListening(); busy = false;
+  if(synth){ try{ synth.cancel(); }catch(e){} }
+  show('home'); renderHome(); setMood('idle');
+});
+$('againBtn').addEventListener('click', function(){ openStory(story); });
+$('otherBtn').addEventListener('click', function(){ show('home'); renderHome(); setMood('idle'); });
+
+$('slowSel').value = String(save.slow);
+$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 5; persist(); });
+
+$('addForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var title = $('cTitle').value.trim() || 'นิทานของเรา';
+  var lines = $('cText').value.split(/\n+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  var sentences = lines.map(segmentLine)
+    .map(function(a){ return a.filter(function(w){ return norm(w).length > 0; }); })
+    .filter(function(a){ return a.length > 0; });
+  var msg = $('addMsg');
+  if(!sentences.length){ msg.classList.add('warn'); msg.textContent = 'กรุณาพิมพ์เนื้อเรื่องอย่างน้อย 1 ประโยค'; return; }
+  save.custom.push({id:'c' + Date.now(), title:title, sentences:sentences});
+  persist();
+  $('cTitle').value = ''; $('cText').value = '';
+  msg.classList.remove('warn'); msg.textContent = 'บันทึกแล้ว อยู่ในรายการด้านบน';
+  renderHome();
+});
+
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden && listening){ stopListening(); bubble('พักก่อนนะ กดไมค์เมื่ออยากอ่านต่อ'); }
+});
+
+/* ============ เริ่มต้น ============ */
+renderNotices();
+renderHome();
+setMood('idle');
+show('home');
+})();
+</script>
+</body>
+</html>

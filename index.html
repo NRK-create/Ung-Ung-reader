@@ -12,243 +12,147 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-/* Layout: one calm column. Storybook card in the middle, mascot buddy above it, one big mic button below. */
-:root{
-  --bg:#EDF1FF; --surface:#FFFFFF; --ink:#1B2260; --muted:#5D65A0; --line:#D6DCF6;
-  --brand:#4756D6; --brand-deep:#3745B8; --brand-soft:#E3E7FF;
-  --sun:#FFC63B; --sun-soft:#FFF1C2;
-  --ok:#0B8A55; --ok-soft:#D9F5E7;
-  --bad:#D63640; --bad-soft:#FFE1E2;
-  --help:#A85F00; --help-soft:#FFEBC2;
-  --lv1:#0B7A4B; --lv1-soft:#D9F5E7;
-  --lv2:#9A5A00; --lv2-soft:#FFEBC2;
-  --lv3:#7A32C2; --lv3-soft:#EEDFFF;
-  --font-display:"Mali","Noto Sans Thai Looped",Tahoma,sans-serif;
-  --font-ui:"Noto Sans Thai Looped","Mali",Tahoma,sans-serif;
-  color-scheme:light;
-}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{
-  background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:1rem;line-height:1.65;
-  padding-inline:16px;padding-block:20px 48px;min-height:100%;
-}
-.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-h1,h2,h3{font-family:var(--font-display);margin:0;line-height:1.3;text-wrap:balance}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
-[hidden]{display:none!important}
-
-/* ---------- home ---------- */
-.hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.hero .mascot-slot{width:96px;flex:none}
-.hero-text{flex:1 1 240px;min-width:0}
-.hero h1{font-size:clamp(1.9rem,6vw,2.6rem);color:var(--brand-deep)}
-.hero p{margin:4px 0 0;color:var(--muted)}
-.notice{background:var(--sun-soft);border:2px solid var(--sun);border-radius:16px;padding:12px 16px;font-size:.95rem}
-.notice+.notice{margin-top:-8px}
-.story-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
-.story-list li{display:flex;gap:8px;min-width:0}
-.story{
-  flex:1;min-width:0;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:22px;
-  padding:16px 18px;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s;
-}
-.story:hover{border-color:var(--brand);transform:translateY(-2px)}
-.story .s-title{font-family:var(--font-display);font-weight:700;font-size:1.3rem;color:var(--ink)}
-.story .s-meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;color:var(--muted);font-size:.9rem}
-.lv{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:0 10px;font-weight:600;font-size:.9rem}
-.lv.l1{background:var(--lv1-soft);color:var(--lv1)}
-.lv.l2{background:var(--lv2-soft);color:var(--lv2)}
-.lv.l3{background:var(--lv3-soft);color:var(--lv3)}
-.lv.l0{background:var(--brand-soft);color:var(--brand-deep)}
-.pips{display:inline-flex;gap:3px}
-.pips i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.28}
-.pips i.on{opacity:1}
-.s-hit{font-size:.9rem;color:var(--muted)}
-.stars{display:inline-flex;gap:2px}
-.stars svg{width:20px;height:20px}
-.del{align-self:flex-start;background:none;border:2px solid var(--line);border-radius:14px;padding:6px 10px;color:var(--muted);font-size:.85rem}
-.panel{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:6px 18px}
-.panel summary{cursor:pointer;font-weight:600;padding:12px 0;list-style:none}
-.panel summary::-webkit-details-marker{display:none}
-.panel summary::after{content:"＋";float:right;color:var(--brand)}
-.panel[open] summary::after{content:"－"}
-.form{display:flex;flex-direction:column;gap:12px;padding-bottom:16px}
-.form label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.95rem}
-.form small{font-weight:400;color:var(--muted)}
-input[type=text],input[type=search],textarea,select{
-  font:inherit;color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;
-}
-textarea{min-height:120px;resize:vertical;font-family:var(--font-display)}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.btn{
-  background:var(--brand);color:#fff;border:0;border-radius:16px;padding:12px 22px;font-weight:700;
-  box-shadow:0 4px 0 var(--brand-deep);transition:transform .1s,box-shadow .1s;
-}
-.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--brand-deep)}
-.btn.alt{background:#fff;color:var(--brand-deep);border:2px solid var(--brand);box-shadow:0 4px 0 var(--line)}
-.settings{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
-.settings select{width:auto}
-
-/* ---------- search, level chips, add panel ---------- */
-.tools{display:flex;flex-direction:column;gap:12px}
-.search{position:relative}
-.search input{padding:12px 46px 12px 46px;border-radius:18px;font-size:1.05rem}
-.search input[type=search]::-webkit-search-cancel-button{display:none}
-.search .s-ico{position:absolute;left:15px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-.search .clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--muted);display:grid;place-items:center}
-.search .clr svg{width:18px;height:18px}
-.fchips{display:flex;gap:8px;flex-wrap:wrap}
-.fchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600}
-.fchip .n{font-size:.85rem;font-variant-numeric:tabular-nums;background:var(--brand-soft);color:var(--brand-deep);border-radius:999px;padding:0 8px}
-.fchip[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
-.fchip[aria-pressed=true] .n{background:rgba(255,255,255,.22);color:#fff}
-.hint.left{text-align:left}
-.story-list li.empty{flex-direction:column;align-items:center;text-align:center;grid-column:1/-1;gap:12px;padding:20px 8px;color:var(--muted)}
-.story-list li.empty p{margin:0}
-.src-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.src-row .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px}
-.src-row .btn svg{width:22px;height:22px;flex:none}
-.btn[disabled]{opacity:.55;pointer-events:none}
-.scan{display:flex;gap:12px;align-items:center;background:var(--brand-soft);border-radius:16px;padding:10px 12px}
-.scan img{width:64px;height:64px;object-fit:cover;border-radius:12px;flex:none;background:#fff}
-.scan-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.scan-body p{margin:0;font-size:.92rem;overflow-wrap:anywhere}
-.scan-body p.warn{color:var(--bad);font-weight:600}
-progress{width:100%;height:10px;border:0;border-radius:999px;overflow:hidden;appearance:none;-webkit-appearance:none;background:#fff}
-progress::-webkit-progress-bar{background:#fff}
-progress::-webkit-progress-value{background:var(--brand);border-radius:999px}
-progress::-moz-progress-bar{background:var(--brand)}
-.prev{background:var(--brand-soft);border-radius:16px;padding:10px 14px}
-.prev b{font-family:var(--font-display)}
-.prev ol{margin:6px 0 0;padding-left:1.4em;font-family:var(--font-display);font-size:1.05rem;overflow-wrap:anywhere}
-.prev li.more{list-style:none;margin-left:-1.4em;color:var(--muted);font-family:var(--font-ui);font-size:.9rem}
-
-/* ---------- reader ---------- */
-.bar{display:flex;align-items:center;gap:12px}
-.back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 14px;font-weight:600}
-.bar-title{flex:1;min-width:0;font-family:var(--font-display);font-weight:700;font-size:1.1rem;text-align:center;overflow-wrap:anywhere}
-.count{color:var(--muted);font-size:.9rem;white-space:nowrap}
-.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.dots span{width:12px;height:12px;border-radius:50%;background:var(--line);transition:background .2s,transform .2s}
-.dots span.done{background:var(--ok)}
-.dots span.cur{background:#fff;border:3px solid var(--brand);transform:scale(1.25)}
-.buddy{display:flex;align-items:center;gap:14px}
-.buddy .mascot-slot{width:84px;flex:none}
-.bubble{
-  position:relative;margin:0;flex:1;min-width:0;background:var(--surface);border:2px solid var(--line);border-radius:20px;
-  padding:10px 16px;font-weight:600;min-height:3.4em;display:flex;align-items:center;
-}
-.bubble::before{content:"";position:absolute;left:-10px;top:50%;width:16px;height:16px;background:var(--surface);
-  border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateY(-50%) rotate(45deg)}
-.sentence{
-  background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:26px 18px;
-  display:flex;flex-wrap:wrap;gap:8px 4px;justify-content:center;align-content:center;min-height:11rem;
-  box-shadow:0 6px 0 var(--line);
-}
-.w{
-  font-family:var(--font-display);font-weight:600;font-size:clamp(2.1rem,8vw,3.3rem);line-height:1.5;
-  background:transparent;border:0;border-bottom:5px solid transparent;border-radius:16px;padding:0 .18em;color:var(--ink);
-  transition:background .2s,color .2s,border-color .2s;
-}
-.w.cur{background:var(--sun-soft);border-bottom-color:var(--sun)}
-.w.ok{color:var(--ok);background:var(--ok-soft)}
-.w.help{color:var(--help);background:var(--help-soft)}
-.w.cur.bad{background:var(--bad-soft);border-bottom-color:var(--bad);color:var(--bad)}
-.heard{margin:0;text-align:center;color:var(--muted);font-size:.95rem;min-height:1.6em;overflow-wrap:anywhere}
-.controls{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
-.ctl{
-  display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:20px;
-  padding:12px 8px;font-weight:600;font-size:.9rem;min-width:0;
-}
-.ctl svg{width:28px;height:28px;color:var(--brand-deep)}
-.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
-.mic{
-  position:relative;width:104px;height:104px;border-radius:50%;border:0;background:var(--brand);color:#fff;
-  display:grid;place-items:center;box-shadow:0 6px 0 var(--brand-deep);transition:transform .1s,box-shadow .1s,background .2s;
-}
-.mic:active{transform:translateY(4px);box-shadow:0 2px 0 var(--brand-deep)}
-.mic svg{width:46px;height:46px}
-.mic.on{background:var(--sun);color:var(--ink);box-shadow:0 6px 0 #D9A21A}
-.mic.on::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:4px solid var(--sun);animation:ring 1.4s ease-out infinite}
-.mic-label{font-weight:700}
-.waves{display:flex;gap:4px;align-items:flex-end;height:20px}
-.waves i{width:5px;border-radius:3px;background:var(--brand);animation:wave 1s ease-in-out infinite}
-.waves i:nth-child(1){height:8px}
-.waves i:nth-child(2){height:16px;animation-delay:.15s}
-.waves i:nth-child(3){height:12px;animation-delay:.3s}
-.waves i:nth-child(4){height:18px;animation-delay:.45s}
-.waves i:nth-child(5){height:9px;animation-delay:.6s}
-.hint{margin:0;text-align:center;color:var(--muted);font-size:.92rem}
-.hint.warn{color:var(--bad);font-weight:600}
-
-/* ---------- result ---------- */
-.result{align-items:center;text-align:center;display:flex;flex-direction:column;gap:18px}
-.result .mascot-slot{width:130px}
-.result .stars svg{width:48px;height:48px}
-.stat-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.stat{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:10px 18px;min-width:130px}
-.stat b{display:block;font-family:var(--font-display);font-size:1.8rem;font-variant-numeric:tabular-nums}
-.stat span{color:var(--muted);font-size:.9rem}
-.stat.ok b{color:var(--ok)}.stat.help b{color:var(--help)}.stat.bad b{color:var(--bad)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.chip{font-family:var(--font-display);font-weight:600;font-size:1.4rem;background:var(--help-soft);color:var(--help);border:0;border-radius:14px;padding:2px 14px}
-
-/* ---------- mascot (seal) ---------- */
-.mascot{width:100%;height:auto;display:block;overflow:visible}
-.mascot .happy-eyes,.mascot .drop{display:none}
-.mascot[data-mood=happy] .eyes{display:none}
-.mascot[data-mood=happy] .happy-eyes{display:block}
-.mascot[data-mood=happy] .body{animation:hop .5s ease 3;transform-origin:60px 118px}
-.mascot[data-mood=oops] .drop{display:block}
-.mascot[data-mood=oops] .pupil{transform-box:fill-box;transform-origin:center;transform:scale(.7)}
-.mascot[data-mood=listen] .pupil{transform-box:fill-box;transform-origin:center;transform:scale(1.3)}
-.mascot[data-mood=listen] .body{animation:tilt 2.6s ease-in-out infinite;transform-origin:60px 118px}
-
-@keyframes ring{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.25);opacity:0}}
-@keyframes wave{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.2)}}
-@keyframes tilt{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:420px){
-  .controls{gap:8px}
-  .mic{width:92px;height:92px}
-  .buddy .mascot-slot{width:68px}
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
 
-  <!-- ===== หน้าเลือกนิทาน ===== -->
-  <section id="home" class="wrap" style="gap:20px">
+  <!-- ===== โหลด ===== -->
+  <section id="boot" class="screen" style="align-items:center;padding-top:60px">
+    <div class="mascot-slot" style="width:120px"></div>
+    <p class="hint" id="bootMsg">กำลังเปิดแอป…</p>
+  </section>
+
+  <!-- ===== สมัคร / เข้าสู่ระบบ ===== -->
+  <section id="auth" class="screen" hidden>
     <header class="hero">
       <div class="mascot-slot"></div>
       <div class="hero-text">
         <h1>อุ๋งอุ๋งอ่านนิทาน</h1>
-        <p>เลือกนิทานสั้นๆ แล้วอ่านออกเสียงตามได้เลย อุ๋งอุ๋งจะฟัง เตือนเมื่ออ่านผิด และช่วยอ่านเมื่ออ่านช้า</p>
+        <p>อ่านนิทานออกเสียง สะสมคะแนน แล้วไปแข่งอันดับกับเพื่อนๆ</p>
       </div>
     </header>
-    <div id="notices"></div>
-    <div class="tools">
-      <div class="search">
-        <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input type="search" id="q" placeholder="ค้นหาชื่อเรื่องหรือคำในนิทาน" aria-label="ค้นหานิทาน" autocomplete="off" enterkeyhint="search">
-        <button type="button" id="qClr" class="clr" aria-label="ล้างคำค้นหา" hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
+    <div id="demoBanner" class="demo-banner" hidden>โหมดทดลอง: ข้อมูลอยู่ในเครื่องนี้เท่านั้น และอีเมลรีเซ็ตรหัสผ่านไม่ได้ส่งจริง (ผู้ดูแลต้องตั้งค่า Firebase ก่อนใช้งานจริง)</div>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab" role="tab" id="tabLogin" aria-selected="true">เข้าสู่ระบบ</button>
+        <button type="button" class="tab" role="tab" id="tabReg" aria-selected="false">สมัครใหม่</button>
       </div>
-      <div id="lvChips" class="fchips" role="group" aria-label="เลือกระดับการอ่าน"></div>
-      <p id="lvDesc" class="hint left"></p>
-    </div>
-    <p id="resCount" class="hint left" role="status" aria-live="polite"></p>
-    <ul id="storyList" class="story-list"></ul>
 
+      <form id="loginForm" class="form" novalidate>
+        <label class="field" for="lEmail">อีเมล
+          <input type="email" id="lEmail" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false">
+        </label>
+        <label class="field" for="lPass">รหัสผ่าน
+          <input type="password" id="lPass" autocomplete="current-password">
+        </label>
+        <label class="check"><input type="checkbox" id="lShow"> แสดงรหัสผ่าน</label>
+        <p id="lMsg" class="msg" role="alert"></p>
+        <button type="submit" class="btn block" id="lBtn">เข้าสู่ระบบ</button>
+        <button type="button" class="linkbtn" id="forgotLink">ลืมรหัสผ่าน?</button>
+      </form>
+
+      <form id="regForm" class="form" hidden novalidate>
+        <label class="field" for="rName">ชื่อน้อง (ชื่อเล่น)
+          <input type="text" id="rName" maxlength="20" autocomplete="off">
+          <small>ชื่อนี้จะโชว์ในหน้าอันดับให้ทุกคนเห็น แนะนำให้ใช้ชื่อเล่น ไม่ต้องใช้ชื่อจริง</small>
+        </label>
+        <label class="field" for="rEmail">อีเมลของผู้ปกครอง
+          <input type="email" id="rEmail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false">
+          <small>ใช้เข้าสู่ระบบ และใช้รับอีเมลเมื่อลืมรหัสผ่าน (ไม่แสดงในอันดับ)</small>
+        </label>
+        <label class="field" for="rPass">รหัสผ่าน
+          <input type="password" id="rPass" autocomplete="new-password">
+          <small>อย่างน้อย 6 ตัวอักษร</small>
+        </label>
+        <label class="check"><input type="checkbox" id="rShow"> แสดงรหัสผ่าน</label>
+        <label class="check"><input type="checkbox" id="rOk"> ฉันเป็นผู้ปกครอง หรือสมัครโดยมีผู้ปกครองอยู่ด้วย และยอมให้เก็บชื่อเล่นกับคะแนนไว้แสดงในอันดับ</label>
+        <p id="rMsg" class="msg" role="alert"></p>
+        <button type="submit" class="btn block" id="rBtn">สมัครและเริ่มเล่น</button>
+      </form>
+
+      <form id="forgotForm" class="form" hidden novalidate>
+        <h2 style="font-size:1.2rem">ลืมรหัสผ่าน</h2>
+        <p class="hint left" style="margin:0">ใส่อีเมลที่ใช้สมัคร เราจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปให้ (ถ้าไม่เห็น ลองดูในกล่องจดหมายขยะ)</p>
+        <label class="field" for="fEmail">อีเมล
+          <input type="email" id="fEmail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false">
+        </label>
+        <p id="fMsg" class="msg" role="alert"></p>
+        <button type="submit" class="btn block" id="fBtn">ส่งอีเมลตั้งรหัสผ่านใหม่</button>
+        <button type="button" class="linkbtn" id="forgotBack">กลับไปเข้าสู่ระบบ</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== หน้าหลัก ===== -->
+  <section id="home" class="screen" hidden>
+    <div class="card me">
+      <div class="mascot-slot"></div>
+      <div class="me-body">
+        <div class="me-name" id="meName"></div>
+        <div class="me-score"><span id="meTotal">0</span><small>คะแนน</small></div>
+        <div class="pills">
+          <button type="button" class="pill gold" id="meRank" aria-label="ดูตารางอันดับ">อันดับ —</button>
+          <button type="button" class="pill" id="meLogin" aria-label="ดูปฏิทินคะแนนเข้าสู่ระบบ"></button>
+        </div>
+      </div>
+    </div>
+    <div id="notices"></div>
+    <h2 style="font-size:1.25rem">เลือกหมวดที่อยากอ่าน</h2>
+    <div id="cats" class="cats"></div>
+    <div class="navrow">
+      <button type="button" class="btn alt" id="goBoard">อันดับ</button>
+      <button type="button" class="btn alt" id="goMine">นิทานของเรา</button>
+      <button type="button" class="btn alt" id="goSet">ตั้งค่า</button>
+    </div>
+  </section>
+
+  <!-- ===== ตารางอันดับ ===== -->
+  <section id="board" class="screen" hidden>
+    <div class="bar">
+      <button type="button" class="back" data-back aria-label="กลับหน้าหลัก"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>กลับ</button>
+      <div class="bar-title">ตารางอันดับ</div>
+      <span style="width:72px"></span>
+    </div>
+    <div class="tabs" role="tablist" id="boardTabs"></div>
+    <p id="boardNote" class="hint left"></p>
+    <div id="boardList" class="rlist" aria-live="polite"></div>
+  </section>
+
+  <!-- ===== เล่นซ้ำเรื่องเก่า ===== -->
+  <section id="lib" class="screen" hidden>
+    <div class="bar">
+      <button type="button" class="back" data-back aria-label="กลับหน้าหลัก"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>กลับ</button>
+      <div class="bar-title" id="libTitle">เรื่องที่อ่านแล้ว</div>
+      <span style="width:72px"></span>
+    </div>
+    <div class="tabs" role="tablist" id="libTabs"></div>
+    <div class="search">
+      <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="search" id="q" placeholder="ค้นหาชื่อเรื่องหรือคำในนิทาน" aria-label="ค้นหานิทาน" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="qClr" class="clr" aria-label="ล้างคำค้นหา" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <p id="libInfo" class="hint left" role="status" aria-live="polite"></p>
+    <ul id="libList" class="story-list"></ul>
+    <div class="pager" id="pager" hidden>
+      <button type="button" class="btn alt small" id="pgPrev">ก่อนหน้า</button>
+      <span id="pgInfo" class="hint"></span>
+      <button type="button" class="btn alt small" id="pgNext">ถัดไป</button>
+    </div>
+  </section>
+
+  <!-- ===== นิทานของเรา ===== -->
+  <section id="mine" class="screen" hidden>
+    <div class="bar">
+      <button type="button" class="back" data-back aria-label="กลับหน้าหลัก"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>กลับ</button>
+      <div class="bar-title">นิทานของเรา</div>
+      <span style="width:72px"></span>
+    </div>
+    <p class="notice">นิทานที่เพิ่มเองใช้ฝึกอ่านได้เท่านั้น <b>ไม่มีคะแนน</b> และเก็บไว้ในเครื่องนี้เครื่องเดียว</p>
+    <ul id="mineList" class="story-list"></ul>
     <details class="panel" id="addBox">
       <summary>เพิ่มนิทานของเราเอง</summary>
       <form id="addForm" class="form">
@@ -298,28 +202,54 @@ progress::-moz-progress-bar{background:var(--brand)}
         </div>
       </form>
     </details>
+  </section>
 
-    <div class="settings">
-      <label for="slowSel">ถ้าเงียบหรืออ่านช้า รอ</label>
-      <select id="slowSel">
-        <option value="3">3 วินาที</option>
-        <option value="5">5 วินาที</option>
-        <option value="8">8 วินาที</option>
-        <option value="12">12 วินาที</option>
-      </select>
-      <span>แล้วอุ๋งอุ๋งช่วยอ่านคำถัดไปให้</span>
+  <!-- ===== ตั้งค่า ===== -->
+  <section id="settings" class="screen" hidden>
+    <div class="bar">
+      <button type="button" class="back" data-back aria-label="กลับหน้าหลัก"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>กลับ</button>
+      <div class="bar-title">ตั้งค่า</div>
+      <span style="width:72px"></span>
+    </div>
+    <div class="card settings-list">
+      <div class="srow">
+        <h3>เวลารอให้ช่วยอ่าน</h3>
+        <div class="settings">
+          <label for="slowSel">ถ้าเงียบหรืออ่านช้า รอ</label>
+          <select id="slowSel">
+            <option value="3">3 วินาที</option>
+            <option value="5">5 วินาที</option>
+            <option value="8">8 วินาที</option>
+            <option value="12">12 วินาที</option>
+          </select>
+          <span>แล้วอุ๋งอุ๋งช่วยอ่านคำถัดไปให้</span>
+        </div>
+      </div>
+      <div class="srow">
+        <h3>บัญชี</h3>
+        <div class="kv" id="setAcct"></div>
+        <label class="field" for="nameEdit">เปลี่ยนชื่อน้อง
+          <input type="text" id="nameEdit" maxlength="20" autocomplete="off">
+        </label>
+        <div class="row"><button type="button" class="btn small" id="nameSave">บันทึกชื่อ</button><span id="nameMsg" class="msg" role="status"></span></div>
+        <div class="kv" id="syncInfo" role="status"></div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn alt" id="logoutBtn">ออกจากระบบ</button>
+        <button type="button" class="btn alt" id="delBtn" style="color:var(--bad);border-color:var(--bad)">ลบบัญชีและข้อมูลทั้งหมด</button>
+      </div>
     </div>
   </section>
 
   <!-- ===== หน้าอ่าน ===== -->
-  <section id="reader" class="wrap" hidden style="gap:18px">
+  <section id="reader" class="screen" hidden style="gap:18px">
     <div class="bar">
-      <button type="button" id="backBtn" class="back" aria-label="กลับไปเลือกนิทาน">
+      <button type="button" id="backBtn" class="back" aria-label="ออกจากการอ่าน">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
         กลับ
       </button>
       <div id="rTitle" class="bar-title"></div>
-      <div id="rCount" class="count"></div>
+      <div class="count"><div id="rCount"></div><div id="rSub" class="hearts"></div></div>
     </div>
     <div id="dots" class="dots" aria-hidden="true"></div>
     <div class="buddy">
@@ -346,6 +276,11 @@ progress::-moz-progress-bar{background:var(--brand)}
         ช่วยอ่านคำนี้
       </button>
     </div>
+    <div class="sub-controls">
+      <button type="button" id="restartBtn" class="btn alt small">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M4 12a8 8 0 108-8H7"/><path d="M7 1v6H1" transform="translate(3 -1)"/></svg>เริ่มประโยคนี้ใหม่
+      </button>
+    </div>
     <p id="micHint" class="hint"></p>
   </section>
 
@@ -354,6 +289,8 @@ progress::-moz-progress-bar{background:var(--brand)}
     <div class="mascot-slot"></div>
     <h2 id="resTitle">อ่านจบแล้ว</h2>
     <div id="resStars" class="stars" role="img"></div>
+    <div id="resPts" class="pts-big"></div>
+    <p id="resNote" class="res-note"></p>
     <div class="stat-row">
       <div class="stat ok"><b id="stOk">0</b><span>คำที่อ่านเอง</span></div>
       <div class="stat help"><b id="stHelp">0</b><span>คำที่อุ๋งอุ๋งช่วย</span></div>
@@ -364,773 +301,18 @@ progress::-moz-progress-bar{background:var(--brand)}
       <div id="practice" class="chips"></div>
       <p class="hint" style="margin-top:6px">แตะที่คำเพื่อฟังเสียงอ่าน</p>
     </div>
-    <div class="row" style="justify-content:center">
-      <button type="button" id="againBtn" class="btn">อ่านเรื่องนี้อีกครั้ง</button>
-      <button type="button" id="otherBtn" class="btn alt">เลือกเรื่องอื่น</button>
-    </div>
+    <div class="row" style="justify-content:center" id="resBtns"></div>
   </section>
 </div>
 
-<script>
-(function(){
-'use strict';
+<div id="modalRoot"></div>
 
-/* ============ ตัวช่วยทั่วไป ============ */
-var $ = function(id){ return document.getElementById(id); };
-var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-var synth = window.speechSynthesis || null;
-var RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-// เทียบเสียงแบบไม่สนวรรณยุกต์ ช่องว่าง และเครื่องหมาย (ตัวรู้จำเสียงมักแยกวรรณยุกต์ไม่ได้)
-var TONES = /[่-๋]/g;
-function norm(s){
-  return String(s).toLowerCase().replace(TONES,'').replace(/[\s​.,!?'"“”‘’()\-–—…ๆ]/g,'');
-}
-function el(tag, cls, text){
-  var e = document.createElement(tag);
-  if(cls) e.className = cls;
-  if(text != null) e.textContent = text;
-  return e;
-}
-
-/* ============ ตรรกะเทียบเสียงกับเนื้อเรื่อง ============ */
-function lev(a, b){
-  var m = a.length, n = b.length;
-  if(!m) return n;
-  if(!n) return m;
-  var prev = new Array(n+1), cur = new Array(n+1), i, j, t;
-  for(j=0;j<=n;j++) prev[j] = j;
-  for(i=1;i<=m;i++){
-    cur[0] = i;
-    for(j=1;j<=n;j++){
-      cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
-    }
-    t = prev; prev = cur; cur = t;
-  }
-  return prev[n];
-}
-function maxDist(n){ return n <= 2 ? 0 : (n <= 5 ? 1 : 2); }
-
-// words: คำที่ปรับรูปแล้ว, text: ข้อความที่ได้ยิน (ปรับรูปแล้ว)
-// คืนจำนวนคำที่อ่านได้ตรงตามลำดับ (k) และตำแหน่งตัวอักษรที่ใช้ไป (c)
-function align(words, text){
-  var c = 0, k = 0;
-  for(; k < words.length; k++){
-    var w = words[k], md = maxDist(w.length), best = null;
-    for(var s = c; s <= Math.min(c+2, text.length); s++){
-      for(var L = w.length-1; L <= w.length+1; L++){
-        if(L < 1 || s+L > text.length) continue;
-        var d = lev(w, text.substr(s, L));
-        if(d <= md && (!best || d < best.d || (d === best.d && s < best.s))) best = {d:d, s:s, e:s+L};
-      }
-    }
-    if(!best) break;
-    c = best.e;
-  }
-  return {k:k, c:c};
-}
-window.__align = align; window.__norm = norm;
-
-/* ============ ระดับการอ่าน ============ */
-var LEVELS = {
-  1:{name:'ง่าย', desc:'คำสั้นๆ ประโยคสั้น เหมาะกับการเริ่มอ่าน'},
-  2:{name:'ท้าทาย', desc:'ประโยคยาวขึ้น และมีคำที่ต้องสะกดมากขึ้น'},
-  3:{name:'ศัพท์ยาก', desc:'คำศัพท์ใหม่ๆ คำยาว และตัวสะกดที่ซับซ้อน'}
-};
-
-/* ============ นิทานในเครื่อง ============ */
-var BUILTIN = [
-  {id:'meemee', title:'แมวน้อยมีมี่', level:1, lines:[
-    'มีมี่|เป็น|แมว|ตัว|เล็ก','มัน|ชอบ|กิน|ปลา','วัน|หนึ่ง|มีมี่|เห็น|ปลา|ใน|ตู้','มีมี่|ดีใจ|มาก','แม่|ให้|ปลา|มีมี่|หนึ่ง|ตัว','มีมี่|อิ่ม|แล้ว|นอน|หลับ|ฝัน|ดี']},
-  {id:'puy', title:'หมาน้อยกับลูกบอล', level:1, lines:[
-    'ปุ๋ย|เป็น|หมา|ตัว|น้อย','ปุ๋ย|ชอบ|เล่น|บอล','บอล|กลิ้ง|ไป|ไกล','ปุ๋ย|วิ่ง|ไป|เก็บ|บอล','ปุ๋ย|ได้|บอล|คืน|มา|แล้ว','ปุ๋ย|ดีใจ|มาก']},
-  {id:'chick', title:'ลูกไก่ตัวน้อย', level:1, lines:[
-    'แม่|ไก่|พา|ลูก|ไป|หา|กิน','ลูก|ไก่|ตัว|เล็ก|เดิน|ตาม|แม่','ลูก|ไก่|เจอ|เมล็ด|ข้าว','ลูก|ไก่|กิน|ข้าว|จน|อิ่ม','แม่|ไก่|พา|ลูก|กลับ|บ้าน','ลูก|ไก่|นอน|หลับ|ใน|ปีก|แม่']},
-  {id:'duck', title:'ลูกเป็ดน้อยกับสายฝน', level:2, lines:[
-    'เช้า|วัน|นี้|ลูก|เป็ด|ตื่น|แต่|เช้า','มัน|เดิน|ไป|ที่|สระ|น้ำ','ลูก|เป็ด|ว่าย|น้ำ|อย่าง|สนุก','แต่|แล้ว|ฝน|ก็|ตก|ลง|มา','ลูก|เป็ด|วิ่ง|กลับ|ไป|หา|แม่','แม่|เป็ด|กอด|ลูก|ไว้|แน่น']},
-  {id:'fish', title:'ปลาน้อยกับเพื่อนใหม่', level:2, lines:[
-    'ปลา|น้อย|ว่าย|น้ำ|อยู่|ใน|แม่|น้ำ|ใหญ่','วัน|นี้|น้ำ|ใส|มาก|ปลา|น้อย|เห็น|ก้อน|หิน|สวย','ปลา|น้อย|ว่าย|ไป|หา|เพื่อน|ที่|ใต้|สะพาน','เพื่อน|ปลา|ชวน|กัน|เล่น|ซ่อน|หา','ทุก|ตัว|หัวเราะ|กัน|อย่าง|มี|ความ|สุข']},
-  {id:'tree', title:'ต้นไม้ของใบบัว', level:2, lines:[
-    'ใน|สวน|หลัง|บ้าน|มี|ต้น|ไม้|ต้น|หนึ่ง','ใบ|บัว|ปลูก|มัน|ไว้|ตั้ง|แต่|มัน|ยัง|เล็ก','ทุก|เช้า|ใบ|บัว|รด|น้ำ|ให้|ต้น|ไม้','ไม่|นาน|ต้น|ไม้|ก็|ออก|ดอก|สี|ชมพู','นก|หลาย|ตัว|มา|เกาะ|ร้อง|เพลง','ใบ|บัว|ยิ้ม|อย่าง|มี|ความ|สุข']},
-  {id:'turtle', title:'เต่าน้อยใจดี', level:2, lines:[
-    'เต่า|น้อย|อาศัย|อยู่|ริม|ลำธาร','วัน|หนึ่ง|กระต่าย|ตก|ลง|ไป|ใน|น้ำ','เต่า|น้อย|ว่าย|ไป|ช่วย|กระต่าย','กระต่าย|ขอบคุณ|เต่า|น้อย|ด้วย|ความ|ดีใจ','จาก|นั้น|ทั้ง|สอง|ก็|เป็น|เพื่อน|กัน']},
-  {id:'forest', title:'ป่าฝนมหัศจรรย์', level:3, lines:[
-    'ป่าฝน|อุดมสมบูรณ์|ไป|ด้วย|ธรรมชาติ','นก|หลากหลาย|ชนิด|ส่ง|เสียง|ร้อง|ประสาน|กัน','ผีเสื้อ|สี|สวย|บิน|ผ่าน|ดอกไม้|นานา|พันธุ์','นัก|วิทยาศาสตร์|มา|ศึกษา|พฤติกรรม|ของ|สัตว์|ป่า','ทุก|คน|ต้อง|ช่วย|กัน|อนุรักษ์|ป่าไม้|ไว้','ธรรมชาติ|ให้|ประโยชน์|แก่|เรา|มากมาย']},
-  {id:'space', title:'ฝันอยากเป็นนักบินอวกาศ', level:3, lines:[
-    'เด็ก|หญิง|ฝัน|อยาก|เป็น|นักบินอวกาศ','เธอ|พยายาม|เรียน|วิทยาศาสตร์|อย่าง|อุตสาหะ','คืน|หนึ่ง|เธอ|ส่อง|กล้อง|ดู|ดาวเคราะห์','ใน|ฝัน|จรวด|ลำ|ใหญ่|พุ่ง|ทะยาน|สู่|ท้องฟ้า','เธอ|ตื่นเต้น|จน|ใจ|เต้น|แรง','ความ|พยายาม|ทำ|ให้|ความ|ฝัน|เป็น|จริง']},
-  {id:'market', title:'ตลาดน้ำยามเช้า', level:3, lines:[
-    'พ่อค้า|แม่ค้า|พาย|เรือ|ขาย|ผลไม้|แต่|เช้า|ตรู่','เรือ|ลำ|เล็ก|เต็ม|ไป|ด้วย|ทุเรียน|และ|มังคุด','นัก|ท่องเที่ยว|ถ่าย|ภาพ|เป็น|ที่|ระลึก','กลิ่น|หอม|ของ|อาหาร|ลอย|มา|ตาม|สายลม','ทุก|คน|ยิ้มแย้ม|แจ่มใส|อย่าง|เป็นมิตร','ตลาด|น้ำ|เป็น|วัฒนธรรม|ที่|น่า|ภาคภูมิใจ']}
-];
-BUILTIN.forEach(function(s){ s.sentences = s.lines.map(function(l){ return l.split('|'); }); });
-
-// ประเมินระดับจากความยาวคำ จำนวนคำต่อประโยค และสัดส่วนคำยาก/ตัวสะกดซับซ้อน
-function levelOf(sentences){
-  var n = 0, len = 0, hard = 0, sw = 0;
-  sentences.forEach(function(s){
-    sw += s.length;
-    s.forEach(function(w){
-      var L = norm(w).length; n++; len += L;
-      if(/[ศษฬฤฦ์ฑฒณธภฐฆฌญ]/.test(w) || L >= 7) hard++;
-    });
-  });
-  if(!n) return 1;
-  var avg = len / n, hr = hard / n, wps = sw / sentences.length;
-  if(hr >= 0.12 || avg >= 3.8) return 3;
-  if(wps <= 6.5 && hr < 0.03 && avg <= 3.3) return 1;
-  return 2;
-}
-
-var KEY = 'ung-ung-reader-v1';
-var save = {best:{}, custom:[], slow:5, lv:0};
-try{
-  var raw = localStorage.getItem(KEY);
-  if(raw){ var o = JSON.parse(raw); if(o && typeof o === 'object') save = Object.assign(save, o); }
-}catch(e){}
-if(!Array.isArray(save.custom)) save.custom = [];
-if([0,1,2,3,'mine'].indexOf(save.lv) < 0) save.lv = 0;
-function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(save)); }catch(e){} }
-function allStories(){
-  return BUILTIN.concat(save.custom.map(function(c){
-    return {id:c.id, title:c.title, level:c.level || levelOf(c.sentences), custom:true, sentences:c.sentences};
-  }));
-}
-var SEG = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('th', {granularity:'word'}) : null;
-function segmentLine(line){
-  if(line.indexOf('|') >= 0) return line.split('|').map(function(s){ return s.trim(); }).filter(Boolean);
-  if(SEG) return Array.from(SEG.segment(line)).filter(function(x){ return x.isWordLike; }).map(function(x){ return x.segment; });
-  return line.split(/\s+/).filter(Boolean);
-}
-
-/* ============ แบ่งประโยคจากข้อความที่วางหรือถอดจากรูป ============ */
-var THAI_CH = /[\u0E00-\u0E7F]/;
-function joinChunks(a){            // ต่อชิ้นข้อความ ไม่ใส่ช่องว่างระหว่างอักษรไทยกับอักษรไทย
-  var s = '';
-  a.forEach(function(c){
-    if(s && !(THAI_CH.test(s.slice(-1)) && THAI_CH.test(c.charAt(0)))) s += ' ';
-    s += c;
-  });
-  return s;
-}
-function wordsOf(line){ return segmentLine(line).filter(function(w){ return norm(w).length > 0; }); }
-function capLen(ws){               // ประโยคยาวเกิน 12 คำ แบ่งเป็นท่อนละประมาณ 9 คำ
-  if(ws.length <= 12) return [ws];
-  var n = Math.ceil(ws.length / 9), size = Math.ceil(ws.length / n), out = [];
-  for(var i = 0; i < ws.length; i += size) out.push(ws.slice(i, i + size));
-  return out;
-}
-function parseText(text){
-  var out = [];
-  String(text || '').replace(/\r/g, '').split(/\n+/).forEach(function(line){
-    line = line.trim();
-    if(!line) return;
-    if(line.indexOf('|') >= 0){ var w = wordsOf(line); if(w.length) out.push(w); return; }
-    var acc = [], cur = [], start = out.length;
-    function flush(last){
-      if(cur.length < 2 && last && out.length > start) out[out.length - 1] = out[out.length - 1].concat(cur);
-      else if(cur.length) capLen(cur).forEach(function(p){ out.push(p); });
-      acc = []; cur = [];
-    }
-    line.split(/[.!?…]+|\s+/).forEach(function(c){
-      if(norm(c).length === 0) return;
-      acc.push(c); cur = wordsOf(joinChunks(acc));
-      if(cur.length >= 3) flush(false);
-    });
-    flush(true);
-  });
-  return out;
-}
-
-/* ============ มาสคอต ============ */
-var SEAL = '<svg class="mascot" viewBox="0 0 120 128" role="img" aria-label="อุ๋งอุ๋ง แมวน้ำผู้ช่วยอ่าน" data-mood="idle"><g class="body"><ellipse cx="46" cy="123" rx="12" ry="5" fill="#6F83C4"/><ellipse cx="74" cy="123" rx="12" ry="5" fill="#6F83C4"/><ellipse cx="60" cy="100" rx="36" ry="26" fill="#8C9FDB"/><ellipse cx="60" cy="106" rx="22" ry="18" fill="#F4F6FF"/><ellipse cx="25" cy="102" rx="8" ry="14" fill="#6F83C4" transform="rotate(32 25 102)"/><ellipse cx="95" cy="102" rx="8" ry="14" fill="#6F83C4" transform="rotate(-32 95 102)"/><ellipse cx="60" cy="56" rx="42" ry="38" fill="#8C9FDB"/><ellipse cx="60" cy="40" rx="22" ry="9" fill="#A6B6E8" opacity=".7"/><ellipse cx="33" cy="63" rx="7" ry="4.5" fill="#FFB3C1" opacity=".85"/><ellipse cx="87" cy="63" rx="7" ry="4.5" fill="#FFB3C1" opacity=".85"/><g stroke="#6F83C4" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M43 66 L29 62"/><path d="M43 71 L29 73"/><path d="M77 66 L91 62"/><path d="M77 71 L91 73"/></g><ellipse cx="52" cy="67" rx="10" ry="8" fill="#fff"/><ellipse cx="68" cy="67" rx="10" ry="8" fill="#fff"/><ellipse cx="60" cy="61" rx="6" ry="4" fill="#1B2260"/><path d="M60 65 V68 M60 68 Q55 73 51 69 M60 68 Q65 73 69 69" stroke="#1B2260" stroke-width="1.8" stroke-linecap="round" fill="none"/><g class="eyes"><circle class="pupil" cx="44" cy="50" r="6.5" fill="#1B2260"/><circle class="pupil" cx="76" cy="50" r="6.5" fill="#1B2260"/><circle cx="46.3" cy="47.6" r="2.3" fill="#fff"/><circle cx="78.3" cy="47.6" r="2.3" fill="#fff"/></g><g class="happy-eyes" fill="none" stroke="#1B2260" stroke-width="4" stroke-linecap="round"><path d="M37 53 Q44 43 51 53"/><path d="M69 53 Q76 43 83 53"/></g><path class="drop" d="M100 34 Q106 44 100 49 Q94 44 100 34 Z" fill="#7FC8FF"/></g></svg>';
-document.querySelectorAll('.mascot-slot').forEach(function(s){ s.innerHTML = SEAL; });
-var moodTimer = null;
-function setMood(m, revertMs){
-  clearTimeout(moodTimer);
-  document.querySelectorAll('.mascot').forEach(function(o){ o.setAttribute('data-mood', m); });
-  if(revertMs) moodTimer = setTimeout(function(){ setMood(listening ? 'listen' : 'idle'); }, revertMs);
-}
-function bubble(t){ $('bubble').textContent = t; }
-
-/* ============ เสียงเอฟเฟกต์และเสียงพูด ============ */
-var ac = null;
-function ensureAudio(){
-  try{
-    if(!ac){ var C = window.AudioContext || window.webkitAudioContext; if(C) ac = new C(); }
-    if(ac && ac.state === 'suspended') ac.resume();
-  }catch(e){}
-}
-function tone(f, t0, d, type, g){
-  if(!ac) return;
-  var o = ac.createOscillator(), v = ac.createGain(), t = ac.currentTime + t0;
-  o.type = type || 'sine'; o.frequency.value = f;
-  v.gain.setValueAtTime(0.0001, t);
-  v.gain.exponentialRampToValueAtTime(g || 0.1, t + 0.02);
-  v.gain.exponentialRampToValueAtTime(0.0001, t + d);
-  o.connect(v); v.connect(ac.destination); o.start(t); o.stop(t + d + 0.05);
-}
-var sfx = {
-  win: function(){ [659,784,988].forEach(function(f,i){ tone(f, i*0.11, 0.22, 'triangle', 0.1); }); },
-  oops: function(){ tone(220, 0, 0.22, 'sawtooth', 0.05); tone(180, 0.14, 0.26, 'sawtooth', 0.05); }
-};
-
-var voice = null;
-function pickVoice(){
-  if(!synth) return;
-  var vs = synth.getVoices() || [];
-  voice = null;
-  for(var i=0;i<vs.length;i++){ if(/^th/i.test(String(vs[i].lang).replace('_','-'))){ voice = vs[i]; break; } }
-}
-if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
-
-var speaking = false, quietUntil = 0;
-function say(text, rate){
-  return new Promise(function(res){
-    if(!synth){ res(); return; }
-    try{ synth.cancel(); }catch(e){}
-    var u = new SpeechSynthesisUtterance(text);
-    u.lang = 'th-TH'; u.rate = rate || 0.85; u.pitch = 1.1;
-    if(voice) u.voice = voice;
-    speaking = true;
-    var done = false, tm = null;
-    function fin(){
-      if(done) return; done = true; clearTimeout(tm);
-      speaking = false;
-      quietUntil = Date.now() + 700;              // รอให้เสียงสะท้อนจางก่อนฟังต่อ
-      setTimeout(function(){ resetRecog(); lastActive = Date.now(); }, 720);
-      res();
-    }
-    u.onend = fin; u.onerror = fin;
-    tm = setTimeout(fin, Math.min(12000, 1500 + text.length * 260));
-    synth.speak(u);
-  });
-}
-
-/* ============ สถานะการอ่าน ============ */
-var story = null, sIdx = 0, words = [], nwords = [], status = [], pos = 0, flashWrong = -1;
-var stats = null, wrongCnt = {};
-var listening = false, busy = false, rec = null, lastActive = 0;
-var ignoreIdx = -1, skipChars = 0, segIdx = -1, base = 0, latest = {idx:-1, text:''};
-var wrongTimer = null;
-
-function show(name){
-  ['home','reader','result'].forEach(function(n){ $(n).hidden = (n !== name); });
-  window.scrollTo(0, 0);
-}
-
-function renderSentence(){
-  var box = $('sentence'); box.textContent = '';
-  words.forEach(function(w, i){
-    var b = el('button', 'w', w); b.type = 'button';
-    b.setAttribute('aria-label', 'ฟังเสียงคำว่า ' + w);
-    b.addEventListener('click', function(){ ensureAudio(); if(!busy) say(w, 0.7); });
-    box.appendChild(b);
-  });
-  paintWords();
-}
-function paintWords(){
-  var kids = $('sentence').children;
-  for(var i=0;i<kids.length;i++){
-    var c = 'w';
-    if(status[i] === 'ok') c += ' ok';
-    else if(status[i] === 'help') c += ' help';
-    else if(i === pos) c += ' cur' + (flashWrong === i ? ' bad' : '');
-    kids[i].className = c;
-  }
-}
-function shake(i){
-  var b = $('sentence').children[i];
-  if(b && b.animate && !RM){
-    b.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(-5px)'},{transform:'translateX(0)'}], {duration:380});
-  }
-}
-function renderDots(doneCur){
-  var d = $('dots'); d.textContent = '';
-  for(var i=0;i<story.sentences.length;i++){
-    var s = el('span');
-    if(i < sIdx || (i === sIdx && doneCur)) s.className = 'done';
-    else if(i === sIdx) s.className = 'cur';
-    d.appendChild(s);
-  }
-}
-
-function resetRecog(){
-  ignoreIdx = latest.idx; skipChars = latest.text.length; segIdx = latest.idx; base = pos;
-  clearTimeout(wrongTimer);
-}
-
-function loadSentence(){
-  words = story.sentences[sIdx];
-  nwords = words.map(norm);
-  status = words.map(function(){ return null; });
-  pos = 0; flashWrong = -1; busy = false;
-  clearTimeout(wrongTimer);
-  renderSentence(); renderDots(false);
-  $('rCount').textContent = 'ประโยค ' + (sIdx+1) + ' จาก ' + story.sentences.length;
-  $('heard').textContent = '';
-  resetRecog();
-  lastActive = Date.now() + 1500;
-  bubble(listening ? 'อ่านประโยคนี้ได้เลย อุ๋งอุ๋งฟังอยู่' : (SR ? 'กดปุ่มไมค์ แล้วอ่านออกเสียงตามได้เลย' : 'แตะคำเพื่อฟังเสียง แล้วกดปุ่มเมื่ออ่านได้'));
-}
-
-function openStory(st){
-  story = st; sIdx = 0; wrongCnt = {};
-  stats = {total: st.sentences.reduce(function(a, s){ return a + s.length; }, 0), ok:0, help:0, wrong:0, clean:0, practice:new Set()};
-  $('rTitle').textContent = st.title;
-  show('reader');
-  loadSentence();
-  updateMic();
-}
-
-function markOk(i){
-  status[i] = 'ok'; stats.ok++;
-  if(!(wrongCnt[sIdx + ':' + i] > 0)) stats.clean++;
-}
-
-var PRAISE = ['เก่งมาก!','อ่านได้ถูกต้องเลย','ยอดเยี่ยม!','อ่านคล่องจัง','เยี่ยมไปเลย!'];
-function sentenceDone(){
-  if(busy) return;
-  busy = true; clearTimeout(wrongTimer); flashWrong = -1; paintWords();
-  setMood('happy', 1600);
-  bubble(PRAISE[Math.floor(Math.random() * PRAISE.length)]);
-  ensureAudio(); sfx.win(); renderDots(true);
-  setTimeout(function(){
-    if($('reader').hidden) return;
-    sIdx++;
-    if(sIdx >= story.sentences.length) finish(); else loadSentence();
-  }, 1600);
-}
-
-async function helpWord(i, reason){
-  if(i >= words.length || busy) return;
-  busy = true; clearTimeout(wrongTimer);
-  status[i] = 'help'; stats.help++; stats.practice.add(words[i]);
-  pos = i + 1; flashWrong = -1; paintWords();
-  bubble(reason === 'slow' ? 'ช้าไปหน่อยนะ อุ๋งอุ๋งช่วยอ่านให้ แล้วอ่านคำต่อไปเลย'
-       : reason === 'wrong' ? 'คำนี้ยากนิดนึง อุ๋งอุ๋งอ่านให้ แล้วไปคำต่อไปกัน'
-       : 'อุ๋งอุ๋งอ่านให้นะ ตามมาเลย');
-  await say(words[i], 0.7);
-  busy = false;
-  setMood(listening ? 'listen' : 'idle');
-  if(pos >= words.length) sentenceDone();
-}
-
-async function wrongAt(i){
-  if(busy || i !== pos || i >= words.length) return;
-  busy = true;
-  var key = sIdx + ':' + i;
-  wrongCnt[key] = (wrongCnt[key] || 0) + 1;
-  stats.wrong++; stats.practice.add(words[i]);
-  flashWrong = i; paintWords(); shake(i);
-  ensureAudio(); sfx.oops(); setMood('oops', 2200);
-  if(wrongCnt[key] >= 3){ busy = false; return helpWord(i, 'wrong'); }
-  bubble('อ่านผิดนะ ลองอีกครั้ง คำนี้อ่านว่า “' + words[i] + '”');
-  await say('ยังไม่ถูกนะ คำนี้อ่านว่า ' + words[i], 0.8);
-  busy = false;
-}
-
-/* ============ ฟังเสียง ============ */
-function onResult(ev){
-  var n = ev.results.length, idx = n - 1, r = ev.results[idx];
-  var rawText = r[0].transcript, text = norm(rawText);
-  latest = {idx: idx, text: text};
-  if(speaking || busy || Date.now() < quietUntil || $('reader').hidden) return;
-  if(idx < ignoreIdx) return;
-  var t = (idx === ignoreIdx) ? text.slice(skipChars) : text;
-  if(idx !== segIdx){ segIdx = idx; base = pos; }
-  $('heard').textContent = t ? 'อุ๋งอุ๋งได้ยินว่า “' + rawText.trim() + '”' : '';
-  if(t.length > 0) lastActive = Date.now();
-  if(pos >= words.length) return;
-
-  var res = align(nwords.slice(base), t);
-  var np = base + res.k;
-  if(np > pos){
-    for(var i = pos; i < np; i++) markOk(i);
-    pos = np; flashWrong = -1; clearTimeout(wrongTimer); lastActive = Date.now();
-    paintWords(); setMood('listen');
-    if(pos >= words.length){ sentenceDone(); return; }
-    bubble('เก่งมาก อ่านต่อเลย');
-  }
-  clearTimeout(wrongTimer);
-  var w = nwords[pos], tail = t.slice(res.c);
-  if(tail.length >= Math.max(2, w.length - 1) && w.indexOf(tail) !== 0){
-    var at = pos;
-    wrongTimer = setTimeout(function(){
-      if(!speaking && !busy && listening && pos === at) wrongAt(at);
-    }, r.isFinal ? 200 : 1000);
-  }
-}
-function onError(e){
-  var code = e && e.error;
-  if(code === 'no-speech' || code === 'aborted') return;
-  var hint = $('micHint');
-  hint.classList.add('warn');
-  if(code === 'not-allowed' || code === 'service-not-allowed'){
-    listening = false; updateMic();
-    hint.textContent = 'อุ๋งอุ๋งยังใช้ไมโครโฟนไม่ได้ กรุณาอนุญาตการใช้ไมค์ในเบราว์เซอร์'
-      + (location.protocol === 'file:' ? ' (ถ้าเปิดไฟล์จากเครื่องแล้วยังไม่ได้ ให้เปิดผ่านเว็บแบบ https หรือ localhost)' : '');
-  }else if(code === 'network'){
-    hint.textContent = 'การฟังเสียงต้องต่ออินเทอร์เน็ต กรุณาตรวจสอบการเชื่อมต่อ';
-  }else if(code === 'audio-capture'){
-    listening = false; updateMic();
-    hint.textContent = 'ไม่พบไมโครโฟนในเครื่องนี้';
-  }else if(code === 'language-not-supported'){
-    listening = false; updateMic();
-    hint.textContent = 'เครื่องนี้ยังไม่รองรับการฟังภาษาไทย';
-  }
-}
-function onEnd(){
-  if(!listening) return;
-  latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
-  try{ rec.start(); }
-  catch(e){ setTimeout(function(){ if(listening){ try{ rec.start(); }catch(_){} } }, 400); }
-}
-function startListening(){
-  if(!SR || listening) return;
-  $('micHint').classList.remove('warn'); $('micHint').textContent = '';
-  rec = new SR();
-  rec.lang = 'th-TH'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
-  rec.onresult = onResult; rec.onerror = onError; rec.onend = onEnd;
-  latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
-  listening = true; lastActive = Date.now() + 2000;
-  updateMic();
-  try{ rec.start(); }catch(e){}
-}
-function stopListening(){
-  listening = false; clearTimeout(wrongTimer);
-  if(rec){ rec.onend = null; try{ rec.abort(); }catch(e){} }
-  rec = null; updateMic();
-}
-function updateMic(){
-  var b = $('micBtn');
-  b.classList.toggle('on', listening);
-  b.setAttribute('aria-pressed', String(listening));
-  $('icoMic').hidden = !SR; $('icoOk').hidden = !!SR;
-  var label = !SR ? 'อ่านถูกแล้ว' : (listening ? 'หยุดฟัง' : 'เริ่มอ่าน');
-  $('micLabel').textContent = label; b.setAttribute('aria-label', label);
-  $('waves').hidden = !listening;
-  setMood(listening ? 'listen' : 'idle');
-}
-
-// ตรวจความช้าทุก 0.3 วินาที
-setInterval(function(){
-  if(!listening || speaking || busy || $('reader').hidden || pos >= words.length) return;
-  if(Date.now() - lastActive > save.slow * 1000) helpWord(pos, 'slow');
-}, 300);
-
-/* ============ จบเรื่อง ============ */
-function starSVG(on){
-  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8L12 2.5z" fill="' + (on ? '#FFC63B' : '#D6DCF6') + '" stroke="' + (on ? '#D9A21A' : '#C3CAEC') + '" stroke-width="1.2" stroke-linejoin="round"/></svg>';
-}
-function starsHTML(n){ var s = ''; for(var i=1;i<=3;i++) s += starSVG(i <= n); return s; }
-
-function finish(){
-  stopListening(); busy = false;
-  var pct = stats.total ? stats.clean / stats.total : 0;
-  var n = pct >= 0.85 ? 3 : (pct >= 0.55 ? 2 : 1);
-  if(n > (save.best[story.id] || 0)){ save.best[story.id] = n; persist(); }
-  $('resTitle').textContent = n === 3 ? 'อ่านเก่งมาก!' : (n === 2 ? 'อ่านได้ดีมาก' : 'อ่านจบแล้ว เก่งมาก');
-  $('resStars').innerHTML = starsHTML(n);
-  $('resStars').setAttribute('aria-label', n + ' ดาว จาก 3 ดาว');
-  $('stOk').textContent = stats.ok; $('stHelp').textContent = stats.help; $('stWrong').textContent = stats.wrong;
-  var pr = $('practice'); pr.textContent = '';
-  stats.practice.forEach(function(w){
-    var c = el('button', 'chip', w); c.type = 'button';
-    c.addEventListener('click', function(){ ensureAudio(); say(w, 0.7); });
-    pr.appendChild(c);
-  });
-  $('practiceBox').hidden = stats.practice.size === 0;
-  show('result');
-  setMood('happy', 0); sfx.win();
-}
-
-/* ============ หน้าเลือกนิทาน ============ */
-var ui = {q:''};
-var CHIPS = [[0,'ทั้งหมด'],[1,'ง่าย'],[2,'ท้าทาย'],[3,'ศัพท์ยาก'],['mine','ของเรา']];
-function hayOf(st){
-  if(!st._hay) st._hay = st.sentences.map(function(s){ return s.map(norm).join(''); }).join('|');
-  return st._hay;
-}
-function pips(l){
-  var d = el('span', 'pips'); d.setAttribute('aria-hidden', 'true');
-  for(var i = 1; i <= 3; i++) d.appendChild(el('i', i <= l ? 'on' : ''));
-  return d;
-}
-function lvBadge(l){
-  var b = el('span', 'lv l' + l);
-  b.appendChild(pips(l)); b.appendChild(document.createTextNode(LEVELS[l].name));
-  return b;
-}
-function renderChips(all){
-  var box = $('lvChips'); box.textContent = '';
-  CHIPS.forEach(function(c){
-    var n = all.filter(function(st){ return c[0] === 0 ? true : (c[0] === 'mine' ? st.custom : st.level === c[0]); }).length;
-    var b = el('button', 'fchip'); b.type = 'button';
-    b.setAttribute('aria-pressed', String(save.lv === c[0]));
-    b.appendChild(document.createTextNode(c[1])); b.appendChild(el('span', 'n', String(n)));
-    b.addEventListener('click', function(){ save.lv = c[0]; persist(); renderHome(); });
-    box.appendChild(b);
-  });
-  $('lvDesc').textContent = LEVELS[save.lv] ? LEVELS[save.lv].desc
-    : (save.lv === 'mine' ? 'นิทานที่คุณเพิ่มเองจากการวางข้อความหรือถ่ายรูป' : '');
-}
-function openAddBox(){
-  var box = $('addBox'); box.open = true;
-  box.scrollIntoView({behavior: RM ? 'auto' : 'smooth', block: 'start'});
-  $('cTitle').focus({preventScroll:true});
-}
-function renderHome(){
-  var all = allStories(), q = norm(ui.q), shown = 0;
-  renderChips(all);
-  var ul = $('storyList'); ul.textContent = '';
-  all.forEach(function(st){
-    if(save.lv === 'mine'){ if(!st.custom) return; }
-    else if(save.lv && st.level !== save.lv) return;
-    var hit = '';
-    if(q){
-      if(norm(st.title).indexOf(q) >= 0) hit = 'title';
-      else if(hayOf(st).indexOf(q) >= 0) hit = 'text';
-      else return;
-    }
-    shown++;
-    var li = el('li');
-    var b = el('button', 'story'); b.type = 'button';
-    b.appendChild(el('span', 's-title', st.title));
-    var meta = el('span', 's-meta');
-    meta.appendChild(lvBadge(st.level));
-    meta.appendChild(el('span', '', st.sentences.length + ' ประโยค'));
-    var stars = el('span', 'stars'); stars.innerHTML = starsHTML(save.best[st.id] || 0);
-    stars.setAttribute('role', 'img'); stars.setAttribute('aria-label', (save.best[st.id] || 0) + ' ดาว');
-    meta.appendChild(stars);
-    b.appendChild(meta);
-    if(hit === 'text') b.appendChild(el('span', 's-hit', 'มีคำว่า “' + ui.q.trim() + '” ในเรื่อง'));
-    b.addEventListener('click', function(){ ensureAudio(); openStory(st); });
-    li.appendChild(b);
-    if(st.custom){
-      var d = el('button', 'del', 'ลบ'); d.type = 'button';
-      d.setAttribute('aria-label', 'ลบนิทาน ' + st.title);
-      d.addEventListener('click', function(){
-        if(!window.confirm('ลบนิทาน “' + st.title + '” ใช่ไหม?')) return;
-        save.custom = save.custom.filter(function(c){ return c.id !== st.id; });
-        delete save.best[st.id]; persist(); renderHome();
-      });
-      li.appendChild(d);
-    }
-    ul.appendChild(li);
-  });
-  $('resCount').textContent = q ? ('พบ ' + shown + ' เรื่อง') : '';
-  $('qClr').hidden = !ui.q;
-  if(!shown){
-    var e = el('li', 'empty');
-    e.appendChild(el('p', '', q ? 'ไม่พบนิทานที่ตรงกับ “' + ui.q.trim() + '”'
-      : (save.lv === 'mine' ? 'ยังไม่มีนิทานที่เพิ่มเอง' : 'ยังไม่มีนิทานในระดับนี้')));
-    var row = el('div', 'row'); row.style.justifyContent = 'center';
-    if(q){
-      var c = el('button', 'btn alt', 'ล้างการค้นหา'); c.type = 'button';
-      c.addEventListener('click', function(){ ui.q = ''; $('q').value = ''; renderHome(); });
-      row.appendChild(c);
-    }
-    var a = el('button', 'btn', 'เพิ่มนิทานเอง'); a.type = 'button';
-    a.addEventListener('click', openAddBox);
-    row.appendChild(a);
-    e.appendChild(row); ul.appendChild(e);
-  }
-}
-function renderNotices(){
-  var box = $('notices'); box.textContent = '';
-  if(!SR){
-    box.appendChild(el('div', 'notice', 'เบราว์เซอร์นี้ยังฟังเสียงพูดไม่ได้ จึงเปิดเป็นโหมดฝึก: แตะคำเพื่อฟังเสียงอ่าน แล้วกดปุ่มเมื่ออ่านได้ถูกแล้ว ถ้าอยากให้อุ๋งอุ๋งฟังเสียงจริง ให้เปิดด้วย Chrome หรือ Edge (Android และคอมพิวเตอร์) หรือ Safari บน iPhone และ iPad'));
-  }
-}
-setTimeout(function(){
-  if(synth && synth.getVoices().length > 0 && !voice){
-    $('notices').appendChild(el('div', 'notice', 'เครื่องนี้ยังไม่มีเสียงอ่านภาษาไทย อุ๋งอุ๋งอาจอ่านออกเสียงให้ไม่ได้ ลองเพิ่มเสียงภาษาไทยในการตั้งค่าการอ่านออกเสียงของเครื่อง'));
-  }
-}, 1200);
-
-/* ============ ปุ่มต่างๆ ============ */
-$('micBtn').addEventListener('click', function(){
-  ensureAudio();
-  if(!SR){
-    if(pos < words.length && !busy){
-      markOk(pos); pos++; flashWrong = -1; paintWords();
-      if(pos >= words.length) sentenceDone();
-    }
-    return;
-  }
-  if(listening){ stopListening(); bubble('พักก่อนนะ กดไมค์เมื่ออยากอ่านต่อ'); }
-  else { startListening(); bubble('อุ๋งอุ๋งฟังอยู่นะ อ่านออกเสียงได้เลย'); }
-});
-$('helpBtn').addEventListener('click', function(){ ensureAudio(); helpWord(pos, 'tap'); });
-$('hearBtn').addEventListener('click', async function(){
-  ensureAudio();
-  if(busy || !words.length) return;
-  busy = true; bubble('ฟังอุ๋งอุ๋งอ่านก่อนนะ');
-  await say(words.join(' '), 0.75);
-  busy = false;
-  bubble(listening ? 'ถึงตาหนูแล้ว อ่านเลย' : 'ถึงตาหนูแล้ว กดไมค์เพื่ออ่านตาม');
-});
-$('backBtn').addEventListener('click', function(){
-  stopListening(); busy = false;
-  if(synth){ try{ synth.cancel(); }catch(e){} }
-  show('home'); renderHome(); setMood('idle');
-});
-$('againBtn').addEventListener('click', function(){ openStory(story); });
-$('otherBtn').addEventListener('click', function(){ show('home'); renderHome(); setMood('idle'); });
-
-$('slowSel').value = String(save.slow);
-$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 5; persist(); });
-
-$('q').addEventListener('input', function(){ ui.q = this.value; renderHome(); });
-$('qClr').addEventListener('click', function(){ ui.q = ''; $('q').value = ''; renderHome(); $('q').focus(); });
-
-/* ---- เพิ่มนิทาน: ตัวอย่างการตัดประโยค ---- */
-var prevTimer = null;
-function updatePreview(){
-  var s = parseText($('cText').value), box = $('prevBox');
-  if(!s.length){ box.hidden = true; return; }
-  var nw = s.reduce(function(a, x){ return a + x.length; }, 0);
-  $('prevInfo').textContent = s.length + ' ประโยค · ' + nw + ' คำ · แนะนำระดับ ' + LEVELS[levelOf(s)].name;
-  var ol = $('prevList'); ol.textContent = '';
-  s.slice(0, 6).forEach(function(a){ ol.appendChild(el('li', '', a.join(' · '))); });
-  if(s.length > 6) ol.appendChild(el('li', 'more', '… และอีก ' + (s.length - 6) + ' ประโยค'));
-  box.hidden = false;
-}
-$('cText').addEventListener('input', function(){ clearTimeout(prevTimer); prevTimer = setTimeout(updatePreview, 250); });
-$('noSeg').hidden = !!SEG;
-
-/* ---- เพิ่มนิทานจากรูป: ถอดตัวหนังสือด้วย Tesseract.js (ภาษาไทย) ---- */
-var TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
-var tessLoading = null;
-function loadTesseract(){
-  if(window.Tesseract) return Promise.resolve(window.Tesseract);
-  if(tessLoading) return tessLoading;
-  tessLoading = new Promise(function(res, rej){
-    var s = document.createElement('script');
-    s.src = TESS_URL; s.async = true;
-    s.onload = function(){ window.Tesseract ? res(window.Tesseract) : (tessLoading = null, rej(new Error('load'))); };
-    s.onerror = function(){ tessLoading = null; rej(new Error('offline')); };
-    document.head.appendChild(s);
-  });
-  return tessLoading;
-}
-function prepImage(file){          // ย่อรูป ทำเป็นขาวดำ และเพิ่มความคมชัดให้ตัวหนังสืออ่านง่ายขึ้น
-  return new Promise(function(res, rej){
-    var url = URL.createObjectURL(file), img = new Image();
-    img.onload = function(){
-      try{
-        var sc = Math.min(1, 1800 / Math.max(img.naturalWidth, img.naturalHeight));
-        var w = Math.max(1, Math.round(img.naturalWidth * sc)), h = Math.max(1, Math.round(img.naturalHeight * sc));
-        var c = document.createElement('canvas'); c.width = w; c.height = h;
-        var x = c.getContext('2d'); x.drawImage(img, 0, 0, w, h);
-        var tc = document.createElement('canvas'), ts = Math.min(1, 128 / Math.max(w, h));
-        tc.width = Math.max(1, Math.round(w * ts)); tc.height = Math.max(1, Math.round(h * ts));
-        tc.getContext('2d').drawImage(c, 0, 0, tc.width, tc.height);
-        var d = x.getImageData(0, 0, w, h), p = d.data, lo = 255, hi = 0, i, g;
-        for(i = 0; i < p.length; i += 4){
-          g = (p[i] * 0.299 + p[i+1] * 0.587 + p[i+2] * 0.114) | 0;
-          p[i] = p[i+1] = p[i+2] = g;
-          if(g < lo) lo = g; if(g > hi) hi = g;
-        }
-        var rng = Math.max(1, hi - lo);
-        for(i = 0; i < p.length; i += 4){ g = ((p[i] - lo) * 255 / rng) | 0; p[i] = p[i+1] = p[i+2] = g; }
-        x.putImageData(d, 0, 0);
-        URL.revokeObjectURL(url);
-        res({canvas:c, thumb:tc.toDataURL('image/jpeg', 0.6)});
-      }catch(e){ URL.revokeObjectURL(url); rej(e); }
-    };
-    img.onerror = function(){ URL.revokeObjectURL(url); rej(new Error('img')); };
-    img.src = url;
-  });
-}
-function cleanOcr(t){            // ตัวอ่านภาษาไทยมักใส่ช่องว่างแทรกกลางคำ จึงเอาช่องว่างระหว่างอักษรไทยออก และเก็บการขึ้นบรรทัดใหม่ตามหนังสือ
-  t = String(t || '').replace(/\r/g, '').normalize('NFC')
-    .replace(/[|_~`^<>{}\[\]\\]/g, ' ');
-  var lines = t.split('\n').map(function(s){
-    s = s.replace(/[ \t]+/g, ' ').trim();
-    var prev;
-    do{ prev = s; s = s.replace(/([\u0E00-\u0E7F]) ([\u0E00-\u0E7F])/g, '$1$2'); }while(s !== prev);
-    return s;
-  }).filter(function(s){ return norm(s).length >= 2 && !/^\d{1,3}$/.test(s); });
-  return lines.join('\n');
-}
-function scanMsg(t, warn){ var m = $('scanMsg'); m.textContent = t; m.classList.toggle('warn', !!warn); }
-function scanBusy(b){ $('camBtn').disabled = b; $('galBtn').disabled = b; }
-function onTessLog(m){
-  var pr = $('scanProg');
-  if(m && m.status === 'recognizing text'){
-    var pct = Math.round((m.progress || 0) * 100);
-    pr.value = pct; scanMsg('กำลังอ่านตัวหนังสือ ' + pct + '%');
-  }else if(m && /loading|initializ/.test(m.status || '')){
-    pr.removeAttribute('value'); scanMsg('กำลังโหลดตัวอ่านภาษาไทย ครั้งแรกอาจใช้เวลาสักครู่');
-  }
-}
-async function scanFile(file){
-  if(!file) return;
-  scanBusy(true);
-  $('scanBox').hidden = false; $('scanProg').hidden = false; $('scanProg').value = 0;
-  scanMsg('กำลังเตรียมรูป…');
-  var pre, T, worker = null;
-  try{
-    try{ pre = await prepImage(file); }
-    catch(e){ scanMsg('เปิดรูปนี้ไม่ได้ ลองถ่ายหรือเลือกรูปใหม่', true); $('scanProg').hidden = true; return; }
-    $('scanThumb').src = pre.thumb;
-    try{ $('scanProg').removeAttribute('value'); scanMsg('กำลังโหลดตัวอ่านภาษาไทย…'); T = await loadTesseract(); }
-    catch(e){ scanMsg('ต้องต่ออินเทอร์เน็ตเพื่ออ่านตัวหนังสือจากรูป ถ้าไม่มีเน็ตให้พิมพ์หรือวางข้อความแทน', true); $('scanProg').hidden = true; return; }
-    worker = await T.createWorker('tha', 1, {logger: onTessLog});
-    var r = await worker.recognize(pre.canvas);
-    var text = cleanOcr(r && r.data && r.data.text);
-    $('scanProg').hidden = true;
-    if(!text){ scanMsg('ไม่พบตัวหนังสือในรูป ลองถ่ายใหม่ให้ใกล้และสว่างขึ้น', true); return; }
-    var ta = $('cText');
-    ta.value = ta.value.trim() ? ta.value.replace(/\s+$/, '') + '\n' + text : text;
-    updatePreview();
-    scanMsg('อ่านเสร็จแล้ว ตรวจและแก้ข้อความด้านล่างให้ถูกต้องก่อนบันทึก');
-    ta.focus({preventScroll:true});
-  }catch(e){
-    $('scanProg').hidden = true;
-    scanMsg('อ่านตัวหนังสือจากรูปไม่สำเร็จ ลองใหม่อีกครั้ง หรือพิมพ์ข้อความแทน', true);
-  }finally{
-    if(worker){ try{ await worker.terminate(); }catch(_){} }
-    scanBusy(false);
-  }
-}
-$('camBtn').addEventListener('click', function(){ $('camInput').click(); });
-$('galBtn').addEventListener('click', function(){ $('galInput').click(); });
-['camInput', 'galInput'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    var f = this.files && this.files[0]; this.value = ''; scanFile(f);
-  });
-});
-
-$('addForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  var title = $('cTitle').value.trim() || 'นิทานของเรา';
-  var sentences = parseText($('cText').value);
-  var msg = $('addMsg');
-  if(!sentences.length){ msg.classList.add('warn'); msg.textContent = 'กรุณาพิมพ์หรือวางเนื้อเรื่องอย่างน้อย 1 ประโยค'; return; }
-  var sel = $('cLevel').value, level = sel === 'auto' ? levelOf(sentences) : Number(sel);
-  save.custom.push({id:'c' + Date.now(), title:title, level:level, sentences:sentences});
-  save.lv = 0; ui.q = ''; $('q').value = '';
-  persist();
-  $('cTitle').value = ''; $('cText').value = ''; $('cLevel').value = 'auto';
-  $('prevBox').hidden = true; $('scanBox').hidden = true;
-  msg.classList.remove('warn'); msg.textContent = 'บันทึกแล้ว เป็นระดับ “' + LEVELS[level].name + '” อยู่ในรายการด้านบน';
-  renderHome();
-});
-
-document.addEventListener('visibilitychange', function(){
-  if(document.hidden && listening){ stopListening(); bubble('พักก่อนนะ กดไมค์เมื่ออยากอ่านต่อ'); }
-});
-
-window.__t = {parseText:parseText, levelOf:levelOf, cleanOcr:cleanOcr};
-
-/* ============ เริ่มต้น ============ */
-renderNotices();
-renderHome();
-setMood('idle');
-show('home');
-})();
-</script>
+<script src="firebase-config.js"></script>
+<script src="stories/easy/stories.js"></script>
+<script src="stories/challenge/stories.js"></script>
+<script src="stories/hard/stories.js"></script>
+<script src="backend.js"></script>
+<script src="app.js"></script>
 <script>
 if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){
   window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
