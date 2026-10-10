@@ -92,12 +92,12 @@ function levelOf(sentences){
 
 /* ============ ตั้งค่าในเครื่อง (ไม่ขึ้นระบบ): เวลารอ, นิทานที่เพิ่มเอง, ครั้งที่พลาด ============ */
 var KEY = 'ung-ung-reader-v1';
-var save = {custom:[], slow:5, strikes:{}};
+var save = {custom:[], slow:1, strikes:{}};   // slow = วินาทีที่รอก่อนช่วยอ่าน (ค่าเริ่มต้น 1)
 (function(){
   var o = LS.get(KEY, null);
-  if(o && typeof o === 'object'){ if(Array.isArray(o.custom)) save.custom = o.custom; if(o.slow) save.slow = Number(o.slow) || 5; if(o.strikes && typeof o.strikes === 'object') save.strikes = o.strikes; }
+  if(o && typeof o === 'object'){ if(Array.isArray(o.custom)) save.custom = o.custom; if(o.slowS) save.slow = Number(o.slowS) || 1; if(o.strikes && typeof o.strikes === 'object') save.strikes = o.strikes; }
 })();
-function persist(){ LS.set(KEY, save); }
+function persist(){ var o = Object.assign({}, save); o.slowS = save.slow; delete o.slow; LS.set(KEY, o); }
 function allCustom(){
   return save.custom.map(function(c){
     return {id:c.id, title:c.title, level:c.level || levelOf(c.sentences), custom:true, sentences:c.sentences};
@@ -168,7 +168,12 @@ function ensureAudio(){
     if(!ac){ var C = window.AudioContext || window.webkitAudioContext; if(C) ac = new C(); }
     if(ac && ac.state === 'suspended') ac.resume();
   }catch(e){}
+  if(synth && !ttsUnlocked){        // มือถือบางเครื่องต้องมีการแตะก่อน เสียงพูดถึงจะดัง
+    ttsUnlocked = true;
+    try{ var u0 = new SpeechSynthesisUtterance(' '); u0.volume = 0; synth.speak(u0); }catch(e){}
+  }
 }
+var ttsUnlocked = false, ttsPaused = false;
 function tone(f, t0, d, type, g){
   if(!ac) return;
   var o = ac.createOscillator(), v = ac.createGain(), t = ac.currentTime + t0;
@@ -199,20 +204,26 @@ function say(text, rate){
     try{ synth.cancel(); }catch(e){}
     var u;
     try{ u = new SpeechSynthesisUtterance(text); }catch(e){ res(); return; }
-    u.lang = 'th-TH'; u.rate = rate || 0.85; u.pitch = 1.1;
+    u.lang = 'th-TH'; u.rate = rate || 0.85; u.pitch = 1.1; u.volume = 1;
     if(voice) u.voice = voice;
     speaking = true;
-    var done = false, tm = null;
+    pauseRec();          // มือถือหลายเครื่องจะไม่ส่งเสียงพูดออกลำโพงถ้าไมค์กำลังฟังอยู่ จึงพักไมค์ระหว่างพูด
+    var done = false, tm = null, wd = null;
     function fin(){
-      if(done) return; done = true; clearTimeout(tm);
+      if(done) return; done = true; clearTimeout(tm); clearTimeout(wd);
       speaking = false;
       quietUntil = Date.now() + 700;              // รอให้เสียงสะท้อนจางก่อนฟังต่อ
-      setTimeout(function(){ resetRecog(); lastActive = Date.now(); }, 720);
+      setTimeout(function(){ resetRecog(); lastActive = Date.now(); resumeRec(); }, 720);
       res();
     }
     u.onend = fin; u.onerror = fin;
-    tm = setTimeout(fin, Math.min(12000, 1500 + text.length * 260));
-    try{ synth.speak(u); }catch(e){ fin(); }
+    u.onstart = function(){ clearTimeout(wd); };
+    tm = setTimeout(fin, Math.min(12000, 2500 + text.length * 260));
+    wd = setTimeout(function(){ try{ synth.cancel(); }catch(e){} fin(); }, 3500);   // ถ้าเครื่องไม่เริ่มพูดเลย ไม่ให้เกมค้าง
+    setTimeout(function(){                       // เว้นช่วงสั้นๆ หลัง cancel เพราะ Chrome บน Android มักทิ้งเสียงที่สั่งพูดทันที
+      if(done) return;
+      try{ if(synth.paused) synth.resume(); synth.speak(u); }catch(e){ fin(); }
+    }, 90);
   });
 }
 
@@ -403,24 +414,39 @@ function onError(e){
   }
 }
 function onEnd(){
-  if(!listening) return;
+  if(!listening || !rec || ttsPaused) return;
   latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
   try{ rec.start(); }
   catch(e){ setTimeout(function(){ if(listening){ try{ rec.start(); }catch(_){} } }, 400); }
 }
-function startListening(){
-  if(!SR || listening) return;
-  $('micHint').classList.remove('warn'); $('micHint').textContent = '';
+function openRec(){
   rec = new SR();
   rec.lang = 'th-TH'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
   rec.onresult = onResult; rec.onerror = onError; rec.onend = onEnd;
   latest = {idx:-1, text:''}; ignoreIdx = -1; skipChars = 0; segIdx = -1; base = pos;
-  listening = true; lastActive = Date.now() + 2000;
-  updateMic();
   try{ rec.start(); }catch(e){}
 }
+function pauseRec(){
+  if(!listening || !rec || ttsPaused) return;
+  ttsPaused = true;
+  rec.onend = null; rec.onresult = null;
+  try{ rec.abort(); }catch(e){}
+  rec = null;
+}
+function resumeRec(){
+  if(!ttsPaused || speaking) return;
+  ttsPaused = false;
+  if(listening && SR && !rec) openRec();
+}
+function startListening(){
+  if(!SR || listening) return;
+  $('micHint').classList.remove('warn'); $('micHint').textContent = '';
+  listening = true; lastActive = Date.now() + 2000; ttsPaused = false;
+  openRec();
+  updateMic();
+}
 function stopListening(){
-  listening = false; clearTimeout(wrongTimer);
+  listening = false; ttsPaused = false; clearTimeout(wrongTimer);
   if(rec){ rec.onend = null; try{ rec.abort(); }catch(e){} }
   rec = null; updateMic();
 }
@@ -962,7 +988,7 @@ function renderSettings(){
   $('nameEdit').value = P.name; $('nameMsg').textContent = '';
   $('syncInfo').textContent = syncMsg || (B.mode === 'demo' ? 'โหมดทดลอง: เก็บคะแนนไว้ในเครื่องนี้' : '');
 }
-$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 5; persist(); });
+$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 1; persist(); });
 $('nameSave').addEventListener('click', function(){
   var n = $('nameEdit').value.replace(/\s+/g, ' ').trim().slice(0, 20), m = $('nameMsg');
   if(!n){ m.className = 'msg err'; m.textContent = 'กรุณาใส่ชื่อ'; return; }
