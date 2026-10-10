@@ -1,5 +1,5 @@
 // แคชไฟล์แอป (รวมนิทานทั้งหมด) ไว้ใช้ตอนไม่มีเน็ต แต่ถ้ามีเน็ตจะดึงไฟล์ใหม่ก่อนเสมอ เพื่อให้อัปเดตแล้วเห็นทันที
-const CACHE = 'ung-ung-v4';
+const CACHE = 'ung-ung-v6';
 const CORE = ['./','./index.html','./style.css','./app.js','./backend.js','./firebase-config.js',
   './stories/easy/stories.js','./stories/challenge/stories.js','./stories/hard/stories.js',
   './manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png','./icons/favicon-48.png'];

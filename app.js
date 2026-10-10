@@ -234,10 +234,10 @@ var listening = false, busy = false, rec = null, lastActive = 0;
 var ignoreIdx = -1, skipChars = 0, segIdx = -1, base = 0, latest = {idx:-1, text:''};
 var wrongTimer = null;
 
-var cur = null, sentGen = 0, snap = null;
+var cur = null, sentGen = 0, snap = null, holdHelp = 0, autoCnt = 0, helped = {};
 
 function loadSentence(){
-  sentGen++;
+  sentGen++; holdHelp = 0; autoCnt = 0;
   snap = {ok:stats.ok, help:stats.help, wrong:stats.wrong, clean:stats.clean, pr:Array.from(stats.practice)};
   words = story.sentences[sIdx];
   nwords = words.map(norm);
@@ -258,6 +258,7 @@ function restartSentence(){
   stats.ok = snap.ok; stats.help = snap.help; stats.wrong = snap.wrong; stats.clean = snap.clean;
   stats.practice = new Set(snap.pr);
   Object.keys(wrongCnt).forEach(function(k){ if(k.indexOf(sIdx + ':') === 0) delete wrongCnt[k]; });
+  Object.keys(helped).forEach(function(k){ if(k.indexOf(sIdx + ':') === 0) delete helped[k]; });
   if(synth){ try{ synth.cancel(); }catch(e){} }
   speaking = false;
   loadSentence();
@@ -266,7 +267,7 @@ function restartSentence(){
 }
 
 function beginReading(st){
-  story = st; sIdx = 0; wrongCnt = {};
+  story = st; sIdx = 0; wrongCnt = {}; helped = {};
   stats = {total: st.sentences.reduce(function(a, s){ return a + s.length; }, 0), ok:0, help:0, wrong:0, clean:0, practice:new Set()};
   go('reader');
   loadSentence();
@@ -338,15 +339,40 @@ function sentenceDone(){
 async function helpWord(i, reason){
   if(i >= words.length || busy) return;
   busy = true; clearTimeout(wrongTimer);
-  status[i] = 'help'; stats.help++; stats.practice.add(words[i]);
+  var hk = sIdx + ':' + i;
+  status[i] = 'help'; if(!helped[hk]){ helped[hk] = 1; stats.help++; } stats.practice.add(words[i]);
+  var g0 = sentGen;
   pos = i + 1; flashWrong = -1; paintWords();
-  bubble(reason === 'slow' ? 'ช้าไปหน่อยนะ อุ๋งอุ๋งช่วยอ่านให้ แล้วอ่านคำต่อไปเลย'
-       : reason === 'wrong' ? 'คำนี้ยากนิดนึง อุ๋งอุ๋งอ่านให้ แล้วไปคำต่อไปกัน'
+  bubble(reason === 'slow' ? 'ช้าไปหน่อยนะ อุ๋งอุ๋งช่วยอ่านให้ แล้วเรามาอ่านประโยคนี้ใหม่ตั้งแต่ต้นกัน'
+       : reason === 'wrong' ? 'คำนี้ยากนิดนึง อุ๋งอุ๋งอ่านให้ แล้วเรามาอ่านประโยคนี้ใหม่ตั้งแต่ต้นกัน'
        : 'อุ๋งอุ๋งอ่านให้นะ ตามมาเลย');
   await say(words[i], 0.7);
   busy = false;
   setMood(listening ? 'listen' : 'idle');
   if(pos >= words.length) sentenceDone();
+  else if(reason !== 'tap' && g0 === sentGen) autoRestart();
+}
+
+// หลังแจ้งว่าอ่านผิดหรืออ่านช้าแล้ว ให้กลับไปเริ่มประโยคนี้ใหม่ตั้งแต่คำแรก
+// สถิติคงเดิม: คำที่ผิดหรือถูกช่วยจะไม่นับเป็น "อ่านถูกตั้งแต่ครั้งแรก" และคำที่อ่านถูกแล้วจะไม่ถูกนับซ้ำ
+// เริ่มใหม่อัตโนมัติได้ประโยคละไม่เกิน 2 ครั้ง เพื่อไม่ให้วนไม่จบ
+function autoRestart(){
+  if(autoCnt >= 2 || $('reader').hidden || pos >= words.length) return false;
+  autoCnt++;
+  for(var i = 0; i < words.length; i++){
+    var key = sIdx + ':' + i;
+    if(status[i] === 'ok'){ stats.ok--; if(!(wrongCnt[key] > 0)) stats.clean--; }
+    else if(status[i] === 'help'){ wrongCnt[key] = Math.max(1, wrongCnt[key] || 0); }
+  }
+  status = words.map(function(){ return null; });
+  pos = 0; flashWrong = -1; busy = false;
+  clearTimeout(wrongTimer);
+  paintWords();
+  $('heard').textContent = '';
+  resetRecog();
+  lastActive = Date.now() + 1500; holdHelp = Math.max(holdHelp, Date.now() + 1500);
+  bubble('มาอ่านประโยคนี้ใหม่ตั้งแต่ต้นนะ');
+  return true;
 }
 
 async function wrongAt(i){
@@ -359,8 +385,11 @@ async function wrongAt(i){
   ensureAudio(); sfx.oops(); setMood('oops', 2200);
   if(wrongCnt[key] >= 3){ busy = false; return helpWord(i, 'wrong'); }
   bubble('อ่านผิดนะ ลองอีกครั้ง คำนี้อ่านว่า “' + words[i] + '”');
+  var g0 = sentGen;
   await say('ยังไม่ถูกนะ คำนี้อ่านว่า ' + words[i], 0.8);
   busy = false;
+  holdHelp = Date.now() + 3500;      // ให้เวลาลองอ่านใหม่ ไม่ให้ระบบ "ช่วยอ่าน" พูดคำเดิมซ้ำทันที
+  if(g0 === sentGen && !autoRestart()) bubble('ลองอ่านคำนี้อีกครั้งนะ');
 }
 
 /* ============ ฟังเสียง ============ */
@@ -464,6 +493,7 @@ function updateMic(){
 // ตรวจความช้าทุก 0.3 วินาที
 setInterval(function(){
   if(!listening || speaking || busy || $('reader').hidden || pos >= words.length) return;
+  if(Date.now() < holdHelp) return;
   if(Date.now() - lastActive > save.slow * 1000) helpWord(pos, 'slow');
 }, 300);
 
