@@ -92,10 +92,10 @@ function levelOf(sentences){
 
 /* ============ ตั้งค่าในเครื่อง (ไม่ขึ้นระบบ): เวลารอ, นิทานที่เพิ่มเอง, ครั้งที่พลาด ============ */
 var KEY = 'ung-ung-reader-v1';
-var save = {custom:[], slow:1, strikes:{}};   // slow = วินาทีที่รอก่อนช่วยอ่าน (ค่าเริ่มต้น 1)
+var save = {custom:[], slow:3, strikes:{}};   // slow = วินาทีที่รอก่อนช่วยอ่าน (ค่าเริ่มต้น 3)
 (function(){
   var o = LS.get(KEY, null);
-  if(o && typeof o === 'object'){ if(Array.isArray(o.custom)) save.custom = o.custom; if(o.slowS) save.slow = Number(o.slowS) || 1; if(o.strikes && typeof o.strikes === 'object') save.strikes = o.strikes; }
+  if(o && typeof o === 'object'){ if(Array.isArray(o.custom)) save.custom = o.custom; if(o.slowS) save.slow = Number(o.slowS) || 3; if(o.strikes && typeof o.strikes === 'object') save.strikes = o.strikes; }
 })();
 function persist(){ var o = Object.assign({}, save); o.slowS = save.slow; delete o.slow; LS.set(KEY, o); }
 function allCustom(){
@@ -988,7 +988,7 @@ function renderSettings(){
   $('nameEdit').value = P.name; $('nameMsg').textContent = '';
   $('syncInfo').textContent = syncMsg || (B.mode === 'demo' ? 'โหมดทดลอง: เก็บคะแนนไว้ในเครื่องนี้' : '');
 }
-$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 1; persist(); });
+$('slowSel').addEventListener('change', function(){ save.slow = Number(this.value) || 3; persist(); });
 $('nameSave').addEventListener('click', function(){
   var n = $('nameEdit').value.replace(/\s+/g, ' ').trim().slice(0, 20), m = $('nameMsg');
   if(!n){ m.className = 'msg err'; m.textContent = 'กรุณาใส่ชื่อ'; return; }
